@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Admin Login</title>
+
+    <link href="{% static 'assets/vendor/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/auth.css' %}" rel="stylesheet">
+
+</head>
+<body>
+<div class="wrapper">
+    <div class="auth-content">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <img class="brand" src="{% static 'assets/img/ghgh' %}" alt="logo">
+                </div>
+                <h6 class="mb-4 text-muted">Sign in to your account</h6>
+
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                    </div>
+                    <button class="btn btn-primary shadow-2 mb-4">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'assets/vendor/jquery3/jquery.min.js' %}"></script>
+<script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>
