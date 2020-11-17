@@ -1,0 +1,46 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Add Product</title>
+
+    <link href="{% static 'assets/vendor/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/auth.css' %}" rel="stylesheet">
+
+</head>
+
+<style>
+
+</style>
+<body>
+    <div class="wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img class="brand" src="" alt="logo">
+                    </div>
+                    <h6 class="mb-4 text-muted">Add a new Category</h6>
+
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                         <div class="form-group">
+                            <input type="text" class="form-control" name="category_name" placeholder="Category Name" required>
+                        </div>
+                        <button class="btn btn-primary shadow-2 mb-4">Add Category</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/vendor/jquery3/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>
