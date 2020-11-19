@@ -2,165 +2,144 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Add Product</title>
 
-    <link href="{% static 'assets/vendor/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/auth.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.3/cropper.css"/>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Add Product</title>
+
+  <link href="{% static 'assets/vendor/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/auth.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
 
 </head>
 
-<style>
-
-</style>
 <body>
-<div class="wrapper">
+  <div class="wrapper">
     <div class="auth-content">
-        <div class="card">
-            <div class="card-body text-center">
-                <div class="mb-4">
-                    <img class="brand" src="" alt="logo">
-                </div>
-                <h6 class="mb-4 text-muted">Add a new product</h6>
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="mb-4">
+            <img class="brand" src="" alt="logo">
+          </div>
+          <h6 class="mb-4 text-muted">Add a new product</h6>
 
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="product_name" placeholder="Product Name" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="product_description"
-                               placeholder="Product Description" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="" class="form-control" name="product_price" placeholder="Product Price" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Select Product Category</label>
-                        <select name="product_category">
-                            <option>Tshirt</option>
-                            <option>Hoodie</option>
-                            <option>Jacket</option>
-                        </select>
-
-                    </div>
-
-                    <!--                        <div class="form-group">-->
-                    <!--                            <input type="file" value="Upload" class="form-control" name="product_image" placeholder="" required>-->
-                    <!--                        </div>-->
-
-                    <div class="input-group form-group">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input disable" id="fileInput"
-                                   aria-describedby="inputGroupFileAddon01" value="Upload" name="product_image">
-                        </div>
-                        <button class="btn btn-primary" id="img-button">add img</button>
-                    </div>
-                    <textarea name="pro_img" id="pro_img" style="display: none;"></textarea>
-                    <img id="img_view">
-
-                    <button class="btn btn-primary shadow-2 mb-4">Add Product</button>
-
-                </form>
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" class="form-control" name="product_name" placeholder="Product Name" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="product_description" placeholder="Product Description"
+                required>
+            </div>
+            <div class="form-group">
+              <input type="" class="form-control" name="product_price" placeholder="Product Price" required>
+            </div>
+            <div class="form-group">
+              <label>Select Product Category</label>
+              <select name="product_category">
+                <option>Tshirt</option>
+                <option>Hoodie</option>
+                <option>Jacket</option>
+              </select>
 
             </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
+            <!-- button for adding img -->
+            <div class="input-group form-group">
+              <button type="button" class="btn btn-primary" id="img-button">add img</button>
+            </div>
+
+            <!-- result of cropped img -->
+            <img id="cropped" class="cropped" src="">
+
+            <!-- hidden field -->
+            <input class="d-none" type="file" id="file-input">
+            <textarea name="pro_img" class="d-none" id="imageBaseData"></textarea>
+
+            <button class="btn btn-primary shadow-2 mb-4">Add Product</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <canvas id="canvas">
-                </canvas>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="btnCrop" class="btn btn-primary">Save changes</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <div class="box-2">
+            <div class="result"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="load" class="btn save btn-primary">Save changes</button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script src="{% static 'assets/vendor/jquery3/jquery.min.js' %}"></script>
-<script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.min.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.3/cropper.js"></script>
-<script>
-        $("#img-button").click(function (e) {
-          $("#fileInput").click();
-        });
+  <script src="{% static 'assets/vendor/jquery3/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+  <script>
 
-        var canvas = $("#canvas"),
-        context = canvas.get(0).getContext("2d")
+    $("#img-button").click(function (e) {
+      $("#file-input").click();
+    });
 
-        $("#fileInput").on("change", function () {
-          if (this.files && this.files[0]) {
-            if (this.files[0].type.match(/^image\//)) {
-              $("#exampleModalCenter").modal("show");
-              var reader = new FileReader();
-              reader.onload = function (evt) {
-                var img = new Image();
-                img.onload = function () {
-                  context.canvas.width = img.width;
-                  context.canvas.height = img.height;
-                  context.drawImage(img, 0, 0);
-                  console.log(img.height);
-                  console.log(img.width);
-                  var cropper = canvas.cropper({
-                    aspectRatio: 16 / 9,
-                  });
-                  $("#btnCrop").click(function () {
-                    // Get a string base 64 data url
-                    var croppedImageDataURL = canvas
-                      .cropper("getCroppedCanvas")
-                      .toDataURL("image/jpg");
+    let result = document.querySelector('.result'),
+      save = document.querySelector('.save'),
+      cropped = document.querySelector('.cropped'),
+      upload = document.querySelector('#file-input'),
+      cropper = '';
 
-                      $('#pro_img').val(croppedImageDataURL)
-                      $('#img_view').attr("src", croppedImageDataURL)
-
-
-                    $("#exampleModalCenter").modal("hide");
-                  });
-                };
-                img.src = evt.target.result;
-              };
-              reader.readAsDataURL(this.files[0]);
-            } else {
-              alert("Invalid file type! Please select an image file.");
-            }
-          } else {
-            alert("No file(s) selected.");
+    upload.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        // start file reader
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target.result) {
+            // create new image
+            $("#exampleModalCenter").modal("show");
+            let img = document.createElement('img');
+            img.id = 'image';
+            img.src = e.target.result
+            // clean result before
+            result.innerHTML = '';
+            // append new image
+            result.appendChild(img);
+            // init cropper
+            cropper = new Cropper(img);
           }
-        });
-        // convert base 64 to file
-        function dataURLtoFile(dataurl, filename) {
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
 
-          var arr = dataurl.split(','),
-              mime = arr[0].match(/:(.*?);/)[1],
-              bstr = atob(arr[1]),
-              n = bstr.length,
-              u8arr = new Uint8Array(n);
+    save.addEventListener('click', (e) => {
+      e.preventDefault();
+      // get result to data uri
+      let imgSrc = cropper.getCroppedCanvas({
+        width: 300 // img disp value
+      }).toDataURL();
+      $("#exampleModalCenter").modal("hide");
+      cropped.src = imgSrc;
+      $('#imageBaseData').val(imgSrc)
+    });
 
-          while(n--){
-              u8arr[n] = bstr.charCodeAt(n);
-          }
-
-          return new File([u8arr], filename, {type:mime});
-        }
-
-
-</script>
+  </script>
 </body>
+
 </html>

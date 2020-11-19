@@ -142,11 +142,17 @@ def cart(request):
 
 
 def add_cart(request, id):
-    print("----------------------------------entered add_cart function--------------------------")
+    print("----------------------------------Entered add_cart function--------------------------")
     if request.user.is_authenticated:
         user = request.user
         product = productdetail.objects.get(id=id)
-        quantity = 1
+
+        quantity = 0
+        if OrderItem.objects.filter(product=product).exists():
+            quantity = quantity + 1
+        else:
+            quantity = 1
+
         items = OrderItem.objects.create(user=user, product=product, quantity=quantity)
         return redirect(cart)
     else:
