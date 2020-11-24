@@ -6,6 +6,7 @@ from django.contrib import messages
 from .models import *
 import datetime
 import uuid
+import blvckparis
 
 
 # Create your views here.
@@ -88,11 +89,11 @@ def user_signup(request):
 def user_profile(request):
     if request.user.is_authenticated:
         user = request.user
-
         profilepic = UserProfile.objects.filter(user=user)
-
         # userdetail = User.objects.filter(user=user)
-        return render(request, 'home/user_profile.html', {'username': user.username, 'profilepic': profilepic})
+        return render(request, 'home/userProfile.html', {'username': user.username, 'profilepic': profilepic})
+    else:
+        return redirect(user_home)
 
 
 def edit_userProfile(request):
@@ -101,6 +102,9 @@ def edit_userProfile(request):
         if request.method == 'POST':
             user_image = request.FILES.get('user_image')
             user = request.user
+            user.first_name = request.POST['full_name']
+            user.email = request.POST['email']
+            user.last_name = request.POST['mobileNo']
 
             print("------------------------------------------------")
             print(user_image)
@@ -113,6 +117,8 @@ def edit_userProfile(request):
                     user_profile1 = UserProfile.objects.get(user=user)
                     user_profile1.user_image = user_image
                     user_profile1.save()
+
+            user.save()
             return redirect(user_profile)
 
 
@@ -136,6 +142,10 @@ def cart(request):
     if request.user.is_authenticated:
         user = request.user
         cart = OrderItem.objects.filter(user=user)
+
+        for i in cart:
+            i.total_price = i.product.product_price * i.quantity
+
         return render(request, 'home/cart.html', {'cart_data': cart})
     else:
         return render(request, 'home/index.html')
@@ -147,13 +157,15 @@ def add_cart(request, id):
         user = request.user
         product = productdetail.objects.get(id=id)
 
-        quantity = 0
+        # Quantity
         if OrderItem.objects.filter(product=product).exists():
-            quantity = quantity + 1
+            order = OrderItem.objects.get(product=product)
+            order.quantity += 1
+            order.save()
         else:
             quantity = 1
+            OrderItem.objects.create(user=user, product=product, quantity=quantity)
 
-        items = OrderItem.objects.create(user=user, product=product, quantity=quantity)
         return redirect(cart)
     else:
         return render(request, 'home/index.html')
@@ -171,15 +183,18 @@ def checkout(request):
         user = request.user
         items = OrderItem.objects.filter(user=user)
         order = Order.objects.filter(user=user)
+        address = ShippingAddress.objects.filter(user=user)
+        print(address)
 
-        return render(request, 'home/checkout.html', {'items': items, 'order': order})
+        total_price = 0
+        for i in items:
+            total_price += i.get_total
+
+        return render(request, 'home/checkout.html',
+                      {'items': items, 'order': order, 'total_price': total_price,
+                       'address': address})
     else:
         return render(request, 'home/index.html')
-
-
-#
-# def checkout(request):
-#     return render(request, 'home/checkout.html')
 
 
 def user_payment(request):
@@ -192,22 +207,33 @@ def user_payment(request):
             address = request.POST['address1']
             state = request.POST['state']
             city = request.POST['city']
-            address = ShippingAddress.objects.create(address=address, state=state, city=city)
 
-            cart = OrderItem.objects.filter(user=user)
-            date = datetime.datetime.now()
-            transaction_id = uuid.uuid4()
+            if ShippingAddress.objects.filter(address=address, state=state, city=city).exists():
+                cart = OrderItem.objects.filter(user=user)
+                date = datetime.datetime.now()
+                transaction_id = uuid.uuid4()
+                payment_mode = 'COD'
+            else:
+                ShippingAddress.objects.create(user=user, address=address, state=state, city=city)
+                cart = OrderItem.objects.filter(user=user)
+                date = datetime.datetime.now()
+                transaction_id = uuid.uuid4()
+                payment_mode = 'COD'
+            address_instance = ShippingAddress.objects.get(address=address)
             for item in cart:
-                Order.objects.create(user=user, address=address, product=item.product,
+                Order.objects.create(user=user, address=address_instance, product=item.product,
                                      total_price=item.product.product_price,
-                                     transaction_id=transaction_id, date_ordered=date, complete=True)
+                                     transaction_id=transaction_id, date_ordered=date, complete=True,
+                                     payment_mode=payment_mode)
                 item.product.save()
             cart.delete()
+
             messages.info(request, "Placed Order")
             return redirect(home)
             # return render(request, 'home/payment.html')
         else:
             print("entered payment else conditioin")
+            orderItem = OrderItem.Objects.get
             return render(request, 'home/checkout.html')
     else:
         user = request.user
@@ -219,6 +245,28 @@ def user_order(request):
     if request.user.is_authenticated:
         user = request.user
         order = Order.objects.filter(user=user)
-        cart = OrderItem.objects.filter(user=user)
-        return render(request, 'home/user_order.html', {'item_data': order})
-    return render(request, 'home/user_order.html')
+        order_dict = {}
+        for x in order:
+            if not x.transaction_id in order_dict.keys():
+                order_dict[x.transaction_id] = x
+                order_dict[x.transaction_id].order_price = order_dict[x.transaction_id].total_price
+            else:
+                order_dict[x.transaction_id].order_price += order_dict[x.transaction_id].total_price
+        print(order_dict)
+        return render(request, 'home/user_order.html', {'item_data': order_dict})
+    return render(request, 'home/index.html')
+
+
+# Razorpay
+
+def razorpay(request):
+    if request.method == 'POST':
+        order_amount = 50000
+        order_currency = 'USD'
+        client = blvckparis.Client(auth=('rzp_test_U3zNUwvRlxDktr', '3W7BJXaO00FzZM190nJA24bK'))
+
+        payment = client.order.create({'amount': order_amount, 'currency': 'USD', 'payment_capture': '1'})
+
+    else:
+        return render(request, 'home/razorpay.html')
+# Razorpay//

@@ -164,67 +164,35 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 
 
- <div class="box-body">
+ 						<div class="box-body">
                             <table width="100%" class="table table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
                                         <th>Order ON</th>
                                         <th>Transaction ID</th>
+										<th>Address</th>
+										<th>Price</th>
+										<th>Payment Mode</th>
+										<th>Order Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-								{% for item in item_data %}
+								{% for tid, item in item_data.items %}
                                     <tr>
-                                        <td>{{item.product.product_name}}</td>
-                                        <td>{{item.total_price}}</td>
                                         <td>{{item.date_ordered}}</td>
                                         <td>{{item.transaction_id}}</td>
+										<td>{{item.address.address}},{{item.address.city}},{{item.address.state}}</td>
+										<td>{{item.order_price}}</td>
+										<td>{{item.payment_mode}}</td>
+										<td>
+											{{item.complete}}
+										</td>
 
                                     </tr>
 								{% endfor %}
                                 </tbody>
                             </table>
                         </div>
-<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-
-	<div id="paypal-button-container"></div>
-
-    <!-- Include the PayPal JavaScript SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AZ-zxKIWEzxYNP6RHnvei07eMWgRneZlEtCTRKXVnMBYSkZISPFsw0Y8WwftjBOb6n0BLn1x9mvFYN4X&currency=USD"></script>
-
-    <script>
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
-
-            // Set up the transaction
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '50'
-                        }
-                    }]
-                });
-            },
-
-            // Finalize the transaction
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    // Show a success message to the buyer
-					console.log(details);
-                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
-                });
-            }
-
-
-        }).render('#paypal-button-container');
-    </script>
-
-
-
-
 
 
 <!-- footer -->
@@ -370,54 +338,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 		});
 	</script>
-	<!-- Large modal -->
-	<!-- <script>
-		$('#').modal('show');
-	</script> -->
-	<!-- //popup modal (for signin & signup)-->
 
-	<!-- cart-js -->
-	<script src="{% static 'web/js/minicart.js' %}"></script>
-	<script>
-		paypalm.minicartk.render(); //use only unique class names other than paypal1.minicart1.Also Replace same class name in css and minicart.min.js
-
-		paypalm.minicartk.cart.on('checkout', function (evt) {
-			var items = this.items(),
-				len = items.length,
-				total = 0,
-				i;
-
-			// Count the number of each item in the cart
-			for (i = 0; i < len; i++) {
-				total += items[i].get('quantity');
-			}
-
-			if (total < 3) {
-				alert('The minimum order quantity is 3. Please add more to your shopping cart before checking out');
-				evt.preventDefault();
-			}
-		});
-	</script>
-	<!-- //cart-js -->
-
-	<!-- password-script -->
-	<script>
-		window.onload = function () {
-			document.getElementById("password1").onchange = validatePassword;
-			document.getElementById("password2").onchange = validatePassword;
-		}
-
-		function validatePassword() {
-			var pass2 = document.getElementById("password2").value;
-			var pass1 = document.getElementById("password1").value;
-			if (pass1 != pass2)
-				document.getElementById("password2").setCustomValidity("Passwords Don't Match");
-			else
-				document.getElementById("password2").setCustomValidity('');
-			//empty string means no validation error
-		}
-	</script>
-	<!-- //password-script -->
 
 	<!-- smoothscroll -->
 	<script src="{% static 'web/js/SmoothScroll.min.js' %}"></script>

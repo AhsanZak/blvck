@@ -8,6 +8,9 @@
 var trafficchart = document.getElementById("trafficflow");
 var saleschart = document.getElementById("sales");
 
+var x = '{{x}}'
+var x = '{{x}}'
+
 var myChart1 = new Chart(trafficchart, {
     type: 'line',
     data: {

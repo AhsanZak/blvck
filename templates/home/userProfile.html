@@ -2,8 +2,26 @@
 <!DOCTYPE html>
 <html lang="zxx">
 
+<!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+<!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<!------ Include the above in your HEAD tag ---------->
+
+<!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+<!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<!------ Include the above in your HEAD tag ---------->
+
 <head>
-    <title>Blvck</title>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
+
+
+
+
+     <title>Blvck</title>
     <!--/tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -19,6 +37,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'web/css/jquery-ui1.css' %}">
     <!-- fonts -->
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800" rel="stylesheet">
+
+
+
 </head>
 
 <style>
@@ -77,18 +98,14 @@
             </div>
             <!-- //search -->
             <!-- cart details -->
-            <div class="top_nav_right">
-                <div class="wthreecartaits wthreecartaits2 cart cart box_1">
-                    <form action="#" method="post" class="last">
-                        <input type="hidden" name="cmd" value="_cart">
-                        <input type="hidden" name="display" value="1">
-                        <button class="w3view-cart" type="submit" name="submit" value="">
-                            <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <!-- //cart details -->
+				<div class="top_nav_right">
+					<div class="wthreecartaits wthreecartaits2 cart cart box_1">
+							<button class="w3view-cart" type="submit" name="submit" value="">
+								<a href="{% url 'cart' %}"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></a>
+							</button>
+					</div>
+				</div>
+				<!-- //cart details -->
             <div class="clearfix"></div>
         </div>
         <div class="clearfix"></div>
@@ -152,68 +169,80 @@
     </div>
 </div>
 <!-- //page -->
-<!------------------------------------------------------>
 
+<!---------------------Profile---------------------------->
 
-<div class="product-sec1" id="hoodies">
-    <h3 class="heading-tittle">Your Profile</h3>
-
-
-    <div class="col-md-4 product-men">
-        <div class="men-pro-item simpleCart_shelfItem">
-            <div class="men-thumb-item">
-
-            </div>
-            <div class="item-info-product ">
-                <h4>User Name :
-                    <a>{{username}}</a><br><br>
-                </h4>
-
-
-                <div>
-                    {% for x in profilepic %}
-                    <img style="height:20em; width:20em;" src="{{x.ImageURL}}">
-                    {% endfor %}
-                </div>
-                <!--									<div class="snipcart-details hvr-outline-out">-->
-                <!--											<fieldset>-->
-                <!--												<a href="{% url 'edit_userProfile' %}"><input type="submit" name="submit" value="Change Profile Picture" class="button" /></a>-->
-                <!--											</fieldset>-->
-                <!--									</div>-->
-
-            </div>
-        </div>
+<div class="container bootstrap snippet">
+    <div class="row">
+  		<div class="col-sm-10"><h1>{{username}}</h1></div>
     </div>
+    <div class="row">
+    	<div class="col-sm-12">
+          <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                  <form class="form" action="{% url 'edit_userProfile' %}" method="POST" id="registrationForm"  enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              {% for x in profilepic %}
+                                <img style="height:20em; width:20em;" src="{{x.ImageURL}}" class="avatar img-circle img-thumbnail" alt="avatar">
+                              {% endfor %}
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                       aria-describedby="inputGroupFileAddon01" value="Upload" name="user_image">
+                                <label class="custom-file-label" for="inputGroupFile01">Upload your Image here</label>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
 
-    <!---------------->
+                          <div class="col-xs-6">
+                              <label for="first_name"><h4>Name</h4></label>
+                              <input type="text" class="form-control" name="full_name" id="first_name" value="{{user.first_name}}" >
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                             <label for="mobile"><h4>Mobile</h4></label>
+                              <input type="text" class="form-control" name="mobileNo" id="mobile" value="{{user.last_name}}">
+                          </div>
+                      </div>
+                      <div class="form-group">
 
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Email</h4></label>
+                              <input type="email" class="form-control" name="email" id="email" value="{{user.email}}" >
+                          </div>
+                      </div>
 
-    <form action="{% url 'edit_userProfile' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="input-group form-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-            </div>
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="inputGroupFile01"
-                       aria-describedby="inputGroupFileAddon01" value="Upload" name="user_image">
-                <label class="custom-file-label" for="inputGroupFile01">Upload your Image here</label>
-            </div>
-        </div>
+                      <div class="form-group">
+                           <div class="col-xs-12">
+                                <br>
+                              	<button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                            </div>
+                      </div>
 
-        <button class="btn btn-primary shadow-2 mb-4" type="submit">Edit Profile</button>
+                        <!-- button for adding img -->
+                        <div class="input-group form-group">
+                          <button type="button" class="btn btn-primary" id="img-button">Add img</button>
+                        </div>
 
-    </form>
+                        <!-- result of cropped img -->
+                        <img id="cropped" class="cropped" src="">
 
+                        <!-- hidden field -->
+                        <input class="d-none" type="file" id="file-input">
+                        <textarea name="pro_img" class="d-none" id="imageBaseData"></textarea>
 
-    <!--------------------------->
+              	</form>
 
+          </div><!--/tab-pane-->
+          </div><!--/tab-content-->
+        </div><!---Col sm -12-->
+    </div><!--row-->
+</div><!---/container-->
+<!------------------------//Profile---------------------------------------->
 
-    <div class="clearfix"></div>
-</div>
-
-
-<!---------------------------------------------------->
 <!-- footer -->
 <footer>
     <div class="container">
@@ -343,141 +372,99 @@
 </footer>
 <!-- //footer -->
 
+
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="box-2">
+            <div class="result"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="load" class="btn save btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
 <!-- js-files -->
 <!-- jquery -->
 <script src="{% static 'web/js/jquery-2.1.4.min.js' %}"></script>
 <!-- //jquery -->
+<!---ImageCropping--->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+  <script>
 
-<!-- popup modal (for signin & signup)-->
-<script src="{% static 'web/js/jquery.magnific-popup.js' %}"></script>
-<script>
-		$(document).ready(function () {
-			$('.popup-with-zoom-anim').magnificPopup({
-				type: 'inline',
-				fixedContentPos: false,
-				fixedBgPos: true,
-				overflowY: 'auto',
-				closeBtnInside: true,
-				preloader: false,
-				midClick: true,
-				removalDelay: 300,
-				mainClass: 'my-mfp-zoom-in'
-			});
+    $("#img-button").click(function (e) {
+      $("#file-input").click();
+    });
 
-		});
+    let result = document.querySelector('.result'),
+      save = document.querySelector('.save'),
+      cropped = document.querySelector('.cropped'),
+      upload = document.querySelector('#file-input'),
+      cropper = '';
 
+    upload.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        // start file reader
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target.result) {
+            // create new image
+            $("#exampleModalCenter").modal("show");
+            let img = document.createElement('img');
+            img.id = 'image';
+            img.src = e.target.result
+            // clean result before
+            result.innerHTML = '';
+            // append new image
+            result.appendChild(img);
+            // init cropper
+            cropper = new Cropper(img);
+          }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
 
-</script>
-<!-- Large modal -->
-<!-- <script>
-    $('#').modal('show');
-</script> -->
-<!-- //popup modal (for signin & signup)-->
+    save.addEventListener('click', (e) => {
+      e.preventDefault();
+      // get result to data uri
+      let imgSrc = cropper.getCroppedCanvas({
+        width: 300 // img disp value
+      }).toDataURL();
+      $("#exampleModalCenter").modal("hide");
+      cropped.src = imgSrc;
+      $('#imageBaseData').val(imgSrc)
+    });
 
-<!-- cart-js -->
-<script src="{% static 'web/js/minicart.js' %}"></script>
-<script>
-		paypalm.minicartk.render(); //use only unique class names other than paypal1.minicart1.Also Replace same class name in css and minicart.min.js
+  </script>
 
-		paypalm.minicartk.cart.on('checkout', function (evt) {
-			var items = this.items(),
-				len = items.length,
-				total = 0,
-				i;
-
-			// Count the number of each item in the cart
-			for (i = 0; i < len; i++) {
-				total += items[i].get('quantity');
-			}
-
-			if (total < 3) {
-				alert('The minimum order quantity is 3. Please add more to your shopping cart before checking out');
-				evt.preventDefault();
-			}
-		});
-
-
-</script>
-<!-- //cart-js -->
 
 <!-- easy-responsive-tabs -->
 <link rel="stylesheet" type="text/css" href="{% static 'web/css/easy-responsive-tabs.css' %} "/>
 <script src="{% static 'web/js/easyResponsiveTabs.js' %}"></script>
 
-<script>
-		$(document).ready(function () {
-			//Horizontal Tab
-			$('#parentHorizontalTab').easyResponsiveTabs({
-				type: 'default', //Types: default, vertical, accordion
-				width: 'auto', //auto or any width like 600px
-				fit: true, // 100% fit in a container
-				tabidentify: 'hor_1', // The tab groups identifier
-				activate: function (event) { // Callback function if tab is switched
-					var $tab = $(this);
-					var $info = $('#nested-tabInfo');
-					var $name = $('span', $info);
-					$name.text($tab.text());
-					$info.show();
-				}
-			});
-		});
 
-
-</script>
-<!-- //easy-responsive-tabs -->
 
 <!-- credit-card -->
 <script src="{% static 'web/js/creditly.js' %}"></script>
 <link rel="stylesheet" href="{% static 'web/css/creditly.css' %}" type="text/css" media="all"/>
-
-<script>
-		$(function () {
-			var creditly = Creditly.initialize(
-				'.creditly-wrapper .expiration-month-and-year',
-				'.creditly-wrapper .credit-card-number',
-				'.creditly-wrapper .security-code',
-				'.creditly-wrapper .card-type');
-
-			$(".creditly-card-form .submit").click(function (e) {
-				e.preventDefault();
-				var output = creditly.validate();
-				if (output) {
-					// Your validated credit card output
-					console.log(output);
-				}
-			});
-		});
-
-
-</script>
-<!-- //credit-card -->
-
-<!-- password-script -->
-<script>
-		window.onload = function () {
-			document.getElementById("password1").onchange = validatePassword;
-			document.getElementById("password2").onchange = validatePassword;
-		}
-
-		function validatePassword() {
-			var pass2 = document.getElementById("password2").value;
-			var pass1 = document.getElementById("password1").value;
-			if (pass1 != pass2)
-				document.getElementById("password2").setCustomValidity("Passwords Don't Match");
-			else
-				document.getElementById("password2").setCustomValidity('');
-			//empty string means no validation error
-		}
-
-
-</script>
-<!-- //password-script -->
-
-<!-- smoothscroll -->
 <script src="{% static 'web/js/SmoothScroll.min.js' %}"></script>
-<!-- //smoothscroll -->
-
-<!-- start-smooth-scrolling -->
 <script src="{% static 'web/js/move-top.js' %}"></script>
 <script src="{% static 'web/js/easing.js' %}"></script>
 <script>
@@ -512,15 +499,7 @@
 
 		});
 
-
 </script>
-<!-- //smooth-scrolling-of-move-up -->
 
-<!-- for bootstrap working -->
 <script src="{% static 'web/js/bootstrap.js' %}"></script>
-<!-- //for bootstrap working -->
-<!-- //js-files -->
-
 </body>
-
-</html>

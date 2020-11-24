@@ -76,13 +76,9 @@
 				<!-- cart details -->
 				<div class="top_nav_right">
 					<div class="wthreecartaits wthreecartaits2 cart cart box_1">
-						<form action="#" method="post" class="last">
-							<input type="hidden" name="cmd" value="_cart">
-							<input type="hidden" name="display" value="1">
 							<button class="w3view-cart" type="submit" name="submit" value="">
-								<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+								<a href="{% url 'cart' %}"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></a>
 							</button>
-						</form>
 					</div>
 				</div>
 				<!-- //cart details -->
@@ -207,7 +203,7 @@
 									</div>
 								</td>
 								<td class="invert">{{x.product.product_name}}</td>
-								<td class="invert">{{x.product.product_price}}</td>
+								<td class="invert">{{x.total_price}}</td>
 								<td class="invert">
 									<a href="{% url 'user_removeOrderItem' x.id %}" type="submit" class="btn btn-outline-danger btn-rounded" onclick="return confirm('Are you sure to Remove this item?')">Remove<i class="fas fa-trash"></i></a>
 								</td>

@@ -74,7 +74,7 @@
                                     <div class="col-sm-8">
                                         <div class="detail text-center">
                                             <p>New Orders</p>
-                                            <span class="number">6,267</span>
+                                            <span class="number">{{no_order}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -87,38 +87,38 @@
                             </div>
                         </div>
                     </div>
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3 mt-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-sm-4">-->
+<!--                                        <div class="icon-big text-center">-->
+<!--                                            <i class="olive fas fa-money-bill-alt"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-sm-8">-->
+<!--                                        <div class="detail text-center">-->
+<!--                                            <p>Revenue</p>-->
+<!--                                            <span class="number">$180,900.00</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="footer">-->
+<!--                                    <hr/>-->
+<!--                                    <div class="stats">-->
+<!--                                        <i class="fas fa-calendar"></i> In this current Month-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="icon-big text-center">
-                                            <i class="olive fas fa-money-bill-alt"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="detail text-center">
-                                            <p>Revenue</p>
-                                            <span class="number">$180,900.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="footer">
-                                    <hr/>
-                                    <div class="stats">
-                                        <i class="fas fa-calendar"></i> In this current Month
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
-                        <div class="card">
-                            <div class="content">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="icon-big text-center">
-                                            <i class="violet fas fa-eye"></i>
+                                            <i class="violet fas fa-user-alt"></i>
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
@@ -137,89 +137,253 @@
                             </div>
                         </div>
                     </div>
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3 mt-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-sm-4">-->
+<!--                                        <div class="icon-big text-center">-->
+<!--                                            <i class="orange fas fa-envelope"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-sm-8">-->
+<!--                                        <div class="detail text-center">-->
+<!--                                            <p>Support Request</p>-->
+<!--                                            <span class="number">75</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="footer">-->
+<!--                                    <hr/>-->
+<!--                                    <div class="stats">-->
+<!--                                        <i class="fas fa-envelope-open-text"></i> Active in the last 7 days-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="icon-big text-center">
-                                            <i class="orange fas fa-envelope"></i>
+                                            <i class="orange fas fa-truck-moving"></i>
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="detail text-center">
-                                            <p>Support Request</p>
-                                            <span class="number">75</span>
+                                            <p>Total Products</p>
+                                            <span class="number">{{no_product}}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr/>
                                     <div class="stats">
-                                        <i class="fas fa-envelope-open-text"></i> Active in the last 7 days
+                                        <i class="fas fa-envelope-open-text"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
+
+
+<!------------------------------------------Graphs-------------------------------------------------------------->
+
+
+
                 <div class="row">
-                    <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="card">
-                            <div class="content">
-                                <div class="row">
-                                    <div class="dfd text-center">
-                                        <i class="blue large-icon mb-2 fas fa-thumbs-up"></i>
-                                        <h4 class="mb-0">+21,900</h4>
-                                        <p class="text-muted">FACEBOOK PAGE LIKES</p>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="head">
+                                        <h4 class="mb-0">Traffic Overview</h4>
+                                        <p class="text-muted">Your year long website traffic data</p>
                                     </div>
+                                    <div class="canvas-wrapper">
+                                        <canvas class="chart" id="trafficflow"></canvas>
+                                    </div>
+                                    <div class="ui hidden divider"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="head">
+                                        <h4 class="mb-0">Sales Overview</h4>
+                                        <p class="text-muted">Your year long sales data</p>
+                                    </div>
+                                    <div class="canvas-wrapper">
+                                        <canvas class="chart" id="sales"></canvas>
+                                    </div>
+                                    <div class="ui hidden divider"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="card">
-                            <div class="content">
-                                <div class="row">
-                                    <div class="dfd text-center">
-                                        <i class="orange large-icon mb-2 fas fa-reply-all"></i>
-                                        <h4 class="mb-0">+22,566</h4>
-                                        <p class="text-muted">INSTAGRAM FOLLOWERS</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="card">
-                            <div class="content">
-                                <div class="row">
-                                    <div class="dfd text-center">
-                                        <i class="grey large-icon mb-2 fas fa-envelope"></i>
-                                        <h4 class="mb-0">+15,566</h4>
-                                        <p class="text-muted">E-MAIL SUBSCRIBERS</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="card">
-                            <div class="content">
-                                <div class="row">
-                                    <div class="dfd text-center">
-                                        <i class="olive large-icon mb-2 fas fa-dollar-sign"></i>
-                                        <h4 class="mb-0">+98,601</h4>
-                                        <p class="text-muted">TOTAL SALES</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+
+
+
+<!----------------------------------//Graph------------------------------------------------------------------>
+
+
+
+
+
+<!------------------------------------------------Other-Feature------------------------------------------------->
+
+
+<!--                <div class="row">-->
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="dfd text-center">-->
+<!--                                        <i class="blue large-icon mb-2 fas fa-thumbs-up"></i>-->
+<!--                                        <h4 class="mb-0">+21,900</h4>-->
+<!--                                        <p class="text-muted">FACEBOOK PAGE LIKES</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="dfd text-center">-->
+<!--                                        <i class="orange large-icon mb-2 fas fa-reply-all"></i>-->
+<!--                                        <h4 class="mb-0">+22,566</h4>-->
+<!--                                        <p class="text-muted">INSTAGRAM FOLLOWERS</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="dfd text-center">-->
+<!--                                        <i class="grey large-icon mb-2 fas fa-envelope"></i>-->
+<!--                                        <h4 class="mb-0">+15,566</h4>-->
+<!--                                        <p class="text-muted">E-MAIL SUBSCRIBERS</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-sm-6 col-md-6 col-lg-3">-->
+<!--                        <div class="card">-->
+<!--                            <div class="content">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="dfd text-center">-->
+<!--                                        <i class="olive large-icon mb-2 fas fa-dollar-sign"></i>-->
+<!--                                        <h4 class="mb-0">+98,601</h4>-->
+<!--                                        <p class="text-muted">TOTAL SALES</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!------------------------------------------------Other-Feature------------------------------------------------->
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+<script>
+
+
+var trafficchart = document.getElementById("trafficflow");
+var saleschart = document.getElementById("sales");
+
+var x = {{x}}
+
+var myChart1 = new Chart(trafficchart, {
+    type: 'line',
+    data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{
+                backgroundColor: "rgba(48, 164, 255, 0.5)",
+                borderColor: "rgba(48, 164, 255, 0.8)",
+                data: [x, x, x,'1168', '1150', '1145','1155', '1155', '1150','1160', '1185', '1190'],
+                label: '',
+                fill: true
+            }]
+    },
+    options: {
+        responsive: true,
+        title: {display: false,text: 'Chart'},
+        legend: {position: 'top',display: false,},
+        tooltips: {mode: 'index',intersect: false,},
+        hover: {mode: 'nearest',intersect: true},
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Months'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Number of Visitors'
+                }
+            }]
+        }
+    }
+});
+
+var myChart2 = new Chart(saleschart, {
+    type: 'bar',
+    data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets: [{
+            label: 'Income',
+            backgroundColor: "rgba(76, 175, 80, 0.5)",
+            borderColor: "#6da252",
+            borderWidth: 1,
+            data: ["280","300","400","600","450","400","500","550","450","650","950","1000"],
+        }]
+    },
+    options: {
+        responsive: true,
+        title: {display: false,text: 'Chart'},
+        legend: {position: 'top',display: false,},
+        tooltips: {mode: 'index',intersect: false,},
+        hover: {mode: 'nearest',intersect: true},
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Months'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Number of Sales'
+                }
+            }]
+        }
+    }
+});
+
+</script>
+
 {% endblock content %}

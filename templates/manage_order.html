@@ -74,6 +74,7 @@
                 <div class="container-fluid">
                     <div class="page-title">
                         <h3>Order Management
+                            <a href="{% url 'order_report' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-user-shield"></i>Order Report</a>
                         </h3>
                     </div>
                     <div class="box box-primary">
@@ -87,11 +88,13 @@
                                         <th>Address</th>
                                         <th>Ordered On</th>
                                         <th>Amount</th>
+                                        <th>Order Status</th>
+                                        <th>Payment Method</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for x in table_data %}
+                                    {% for tid, x in table_data.items %}
                                     <tr>
                                         <td>{{x}}</td>
                                         <td>{{x.transaction_id}}</td>
@@ -99,7 +102,11 @@
                                         <td>{{x.address.address}} ,{{x.address.city}},{{x.address.state}}</td>
                                         <td>{{x.date_ordered}}</td>
                                         <td>{{x.total_price}}</td>
-                                        <td></td>
+                                        <td>{{x.complete}}</td>
+                                        <td>{{x.payment_mode}}</td>
+                                        <td>
+                                           <a href="{% url 'cancel_order' x.transaction_id %}" type="submit" class="btn btn-outline-danger btn-rounded">Cancel/Place Order</a>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

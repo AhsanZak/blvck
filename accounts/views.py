@@ -15,16 +15,16 @@ from django.core.files.base import ContentFile
 def admin_panel(request):
     if request.session.has_key('password'):
         no_users = User.objects.count()
-        return render(request, 'index.html', {'no_users': no_users})
+        x = 1000
+        no_order = Order.objects.count()
+        no_product = productdetail.objects.count()
+        return render(request, 'index.html', {'no_users': no_users, 'x':x, 'no_order':no_order, 'no_product':no_product})
     else:
-        print("adminloginil keri")
         return redirect('/admin-login')
 
 
 def admin_login(request):
-    print("inside hererererer")
     if request.session.has_key('password'):
-        print("first if ")
         return redirect('/adminpanel')
 
     if request.method == 'POST':
@@ -135,7 +135,7 @@ def edit_product(request, product_id):
         if request.method == 'POST':
             product = productdetail.objects.get(id=product_id)
             product.product_name = request.POST['product_name']
-            product.product_category = request.POST['product_category']
+            product.product_category = category.objects.get(category_name=request.POST['product_category'])
             product.product_price = request.POST['product_price']
             product.product_description = request.POST['product_description']
             # product.product_image = request.FILES.get('product_image')
@@ -202,8 +202,8 @@ def create_product(request):
 
             format, imgstr = image_data.split(';base64,')
             ext = format.split('/')[-1]
-
             data = ContentFile(base64.b64decode(imgstr), name=product_name + '.' + ext)
+
             product = productdetail.objects.create(product_name=product_name, product_category=product_category,
                                                    product_description=product_description, product_price=product_price,
                                                    product_image=data)
@@ -211,7 +211,7 @@ def create_product(request):
             print("product created")
             return redirect('/manage-product')
         else:
-            return render(request, 'create_product.html')
+            return render(request, 'trial_CreateProduct.html')
     else:
         return redirect('/admin-login')
 
@@ -240,7 +240,39 @@ def delete_category(request, id):
 
 def manage_order(request):
     if request.session.has_key('password'):
-        table = Order.objects.all()
-        return render(request, 'manage_order.html', {'table_data': table})
+        order = Order.objects.all()
+        order_dict = {}
+        for x in order:
+            if not x.transaction_id in order_dict.keys():
+                order_dict[x.transaction_id] = x
+        print(order_dict)
+        return render(request, 'manage_order.html', {'table_data': order_dict})
     else:
         return redirect(admin_login)
+
+
+def cancel_order(request, tid):
+    if request.session.has_key('password'):
+        print(tid)
+        object = Order.objects.get(transaction_id=tid)
+        if object.complete == True:
+            object.complete = False
+            object.save()
+        else:
+            object.complete = True
+            object.save()
+        return redirect(manage_order)
+    else:
+        return redirect(admin_login)
+
+
+def order_report(request):
+        if request.method == 'POST':
+            start_date = request.POST['start_date']
+            end_date = request.POST['end_date']
+            orderdates = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
+            pending = Order.objects.filter(date_ordered__range=[start_date, end_date], complete=True).count()
+
+            return render(request, 'order_report.html', {'orderdates': orderdates, 'pending': pending})
+        else:
+            return render(request, 'order_report.html')

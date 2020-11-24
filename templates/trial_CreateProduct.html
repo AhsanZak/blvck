@@ -1,0 +1,237 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Management</title>
+    <link href="{% static 'assets/vendor/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/master.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/flagiconcss3/css/flag-icon.min.css' %}" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
+
+
+</head>
+
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="" alt="bootraper logo" class="app-logo">
+            </div>
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="{% url 'manage_user' %}"><i class="fas fa-user-friends"></i>Users</a>
+                </li>
+                 <li>
+                    <a href="{% url 'manage_product' %}"><i class="fas fa-user-friends"></i>Products</a>
+                </li>
+                 <li>
+                    <a href="{% url 'manage_category' %}"><i class="fas fa-user-friends"></i>Category</a>
+                </li>
+                 <li>
+                    <a href="{% url 'manage_order' %}"><i class="fas fa-user-friends"></i>Order</a>
+                </li>
+                <li>
+                    <a href="settings.html"><i class="fas fa-cog"></i>Settings</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="body" class="active">
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary default-secondary-menu"><i class="fas fa-bars"></i><span></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Admin Name</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Messages</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a></li>
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="{% url 'admin_logout' %}" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="page-title">
+                        <h3>Create New Product
+                        </h3>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-body">
+
+                            <!-------------------------------------------------------->
+                            <div class="auth-content">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="mb-4">
+            <img class="brand" src="" alt="logo">
+          </div>
+          <h6 class="mb-4 text-muted">Add a new product</h6>
+
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" class="form-control" name="product_name" placeholder="Product Name" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="product_description" placeholder="Product Description"
+                required>
+            </div>
+            <div class="form-group">
+              <input type="" class="form-control" name="product_price" placeholder="Product Price" required>
+            </div>
+            <div class="form-group">
+              <label>Select Product Category</label>
+              <select name="product_category">
+                <option>Tshirt</option>
+                <option>Hoodie</option>
+                <option>Jacket</option>
+              </select>
+
+            </div>
+
+            <!-- button for adding img -->
+            <div class="input-group form-group">
+              <button type="button" class="btn btn-primary" id="img-button">add img</button>
+            </div>
+
+            <!-- result of cropped img -->
+            <img id="cropped" class="cropped" src="">
+
+            <!-- hidden field -->
+            <input class="d-none" type="file" id="file-input">
+            <textarea name="pro_img" class="d-none" id="imageBaseData"></textarea>
+
+            <button class="btn btn-primary shadow-2 mb-4">Add Product</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+                            <!--------------------------------------------------------->
+
+
+
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="box-2">
+            <div class="result"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="load" class="btn save btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+                            <!---------------------------------------------------------->
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div><script src="{% static 'assets/vendor/jquery3/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+  <script>
+
+    $("#img-button").click(function (e) {
+      $("#file-input").click();
+    });
+
+    let result = document.querySelector('.result'),
+      save = document.querySelector('.save'),
+      cropped = document.querySelector('.cropped'),
+      upload = document.querySelector('#file-input'),
+      cropper = '';
+
+    upload.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        // start file reader
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target.result) {
+            // create new image
+            $("#exampleModalCenter").modal("show");
+            let img = document.createElement('img');
+            img.id = 'image';
+            img.src = e.target.result
+            // clean result before
+            result.innerHTML = '';
+            // append new image
+            result.appendChild(img);
+            // init cropper
+            cropper = new Cropper(img);
+          }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+
+    save.addEventListener('click', (e) => {
+      e.preventDefault();
+      // get result to data uri
+      let imgSrc = cropper.getCroppedCanvas({
+        width: 300 // img disp value
+      }).toDataURL();
+      $("#exampleModalCenter").modal("hide");
+      cropped.src = imgSrc;
+      $('#imageBaseData').val(imgSrc)
+    });
+
+  </script>
+</body>
+
+</html>
+
+
+    <script src="{% static 'assets/vendor/bootstrap4/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/fontawesome5/js/solid.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/fontawesome5/js/fontawesome.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/chartsjs/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/js/dashboard-charts.js' %}"></script>
+    <script src="{% static 'assets/js/script.js' %}"></script>
+<!--    <script>-->
+
+<!--    </script>-->
+<!--</body>-->
+
+<!--</html>-->

@@ -32,11 +32,13 @@ class ShippingAddress(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(productdetail, on_delete=models.CASCADE, null=True, blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
+    date_ordered = models.DateField(auto_now_add=True)
     total_price = models.IntegerField(null=True, blank=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=200, null=True)
     address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, null=True, blank=True)
+    payment_mode = models.CharField(max_length=50, null=True)
+    quantity = models.IntegerField(null=True, blank=True)
 
 
 class OrderItem(models.Model):
@@ -44,3 +46,8 @@ class OrderItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField(default=1, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def get_total(self):
+        total = self.product.product_price * self.quantity
+        return total
