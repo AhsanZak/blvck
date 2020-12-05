@@ -168,24 +168,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             <table width="100%" class="table table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
+										<th>Sl.no</th>
                                         <th>Order ON</th>
                                         <th>Transaction ID</th>
 										<th>Address</th>
 										<th>Price</th>
 										<th>Payment Mode</th>
+										<th>Payment Status</th>
 										<th>Order Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 								{% for tid, item in item_data.items %}
                                     <tr>
+										<td>{{forloop.counter}}</td>
                                         <td>{{item.date_ordered}}</td>
                                         <td>{{item.transaction_id}}</td>
 										<td>{{item.address.address}},{{item.address.city}},{{item.address.state}}</td>
-										<td>{{item.order_price}}</td>
+										<td>{{item.total_price}}</td>
 										<td>{{item.payment_mode}}</td>
+										<td>{{item.payment_status}}</td>
 										<td>
-											{{item.complete}}
+											{{item.order_status}}
 										</td>
 
                                     </tr>

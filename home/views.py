@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from accounts.models import productdetail
+from accounts.models import ProductDetail
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
@@ -7,24 +7,119 @@ from .models import *
 import datetime
 import uuid
 import blvckparis
+import base64
+from django.core.files.base import ContentFile
+from django.http import JsonResponse
+from django.contrib.auth.hashers import check_password
+import requests
+import json
 
 
 # Create your views here.
 
 def home(request):
     if request.user.is_authenticated:
-        product = productdetail.objects.all()
+        product = ProductDetail.objects.all()
         return render(request, 'home/user_index.html', {'product_data': product})
-    product = productdetail.objects.all()
+    product = ProductDetail.objects.all()
     return render(request, 'home/index.html', {'product_data': product})
 
 
 def user_home(request):
     if request.user.is_authenticated:
-        product = productdetail.objects.all()
+        product = ProductDetail.objects.all()
         return render(request, 'home/user_index.html', {'product_data': product})
     else:
         return redirect('user_login')
+
+
+def otp_login(request):
+    if request.user.is_authenticated:
+        return redirect(user_home)
+    otp = 1
+    if request.method == 'POST':
+        number = request.POST['mobile']
+        request.session['number'] = number
+        if User.objects.filter(last_name=number).exists():
+            otp = 0
+            url = "https://d7networks.com/api/verifier/send"
+            number = str(91) + number
+            print(number)
+            payload = {
+                'mobile': number,
+                'sender_id': 'SMSINFO',
+                'message': 'Your otp code is {code}',
+                'expiry': '900'}
+            files = [
+            ]
+            headers = {
+                'Authorization': 'Token b76a52adeb253e2dbb98dd2378d542f8d53fbe6b'
+            }
+            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+            print(response.text.encode('utf8'))
+
+            data = response.text.encode('utf8')
+            datadict = json.loads(data)
+            print('datadict:', datadict)
+
+            id = datadict['otp_id']
+            print('id:', id)
+            request.session['id'] = id
+
+            return render(request, 'home/otplogin.html', {'otp': otp})
+        else:
+            messages.info(request, "Please enter registered Number")
+            return render(request, 'home/otplogin.html', {'otp': otp})
+    else:
+        return render(request, 'home/otplogin.html', {'otp': otp})
+
+
+def verify_otp(request):
+    if request.user.is_authenticated:
+        return redirect(user_home)
+    else:
+        if request.method == 'POST':
+            otp = request.POST['otp']
+            print(otp)
+
+            id_otp = request.session['id']
+            url = "https://d7networks.com/api/verifier/verify"
+
+            payload = {'otp_id': id_otp,
+                       'otp_code': otp}
+            files = [
+
+            ]
+            headers = {
+                'Authorization': 'Token b76a52adeb253e2dbb98dd2378d542f8d53fbe6b'
+            }
+
+            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+            print(response.text.encode('utf8'))
+            data = response.text.encode('utf8')
+            datadict = json.loads(data)
+            status = datadict['status']
+
+            if status == 'success':
+                number = request.session['number']
+                user = User.objects.filter(last_name=number).first()
+                if user is not None:
+                    if user.is_active == False:
+                        messages.info(request, 'User is blocked')
+                        return redirect(user_login)
+                    else:
+                        auth.login(request, user)
+                        return redirect(user_home)
+                else:
+                    return redirect(user_login)
+
+            else:
+                messages.error(request, 'User not Exist')
+                return redirect(user_login)
+
+        else:
+            return HttpResponse("Oops")
 
 
 def user_login(request):
@@ -38,17 +133,21 @@ def user_login(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        user = auth.authenticate(username=username, password=password)
-        print(user)
+        user = User.objects.filter(username=username).first()
 
-        if user is not None:
-            print("user is not none")
-            auth.login(request, user)
-            return redirect('user_home')
+        if user is not None and check_password(password, user.password):
+            if user.is_active == False:
+                print("user is not none")
+                messages.info(request, 'User is Blocked')
+                return redirect('user_login')
+            else:
+                auth.login(request, user)
+                return redirect('user_home')
         else:
-            print("user is none")
-            messages.info(request, "Invalid credentials")
-            return redirect('/user_login')
+            value = {"username": username}
+            messages.info(request, "Invalid Credentials")
+            return redirect('user_login')
+
     else:
         return render(request, 'home/user_login.html')
 
@@ -71,6 +170,9 @@ def user_signup(request):
                 return render(request, 'home/user_signup.html')
             elif User.objects.filter(email=email).exists():
                 messages.info(request, "Email Taken")
+                return render(request, 'home/user_signup.html')
+            elif User.objects.filter(last_name=last_name).exists():
+                messages.info(request, "Mobile Number Taken")
                 return render(request, 'home/user_signup.html')
             else:
                 user = User.objects.create_user(username=username, password=password1, email=email,
@@ -105,17 +207,19 @@ def edit_userProfile(request):
             user.first_name = request.POST['full_name']
             user.email = request.POST['email']
             user.last_name = request.POST['mobileNo']
+            image_data = request.POST['pro_img']
 
-            print("------------------------------------------------")
-            print(user_image)
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name=user.first_name + '.' + ext)
 
-            if user_image is not None:
+            if data is not None:
                 profilepic = UserProfile.objects.filter(user=user)
                 if not profilepic:
-                    UserProfile.objects.create(user_image=user_image, user=user)
+                    UserProfile.objects.create(user_image=data, user=user)
                 else:
                     user_profile1 = UserProfile.objects.get(user=user)
-                    user_profile1.user_image = user_image
+                    user_profile1.user_image = data
                     user_profile1.save()
 
             user.save()
@@ -133,7 +237,7 @@ def user_logout(request):
 
 def view_single(request, id):
     print(id)
-    product = productdetail.objects.filter(id=id).first()
+    product = ProductDetail.objects.filter(id=id).first()
     return render(request, 'home/single.html', {'product': product})
 
 
@@ -146,16 +250,59 @@ def cart(request):
         for i in cart:
             i.total_price = i.product.product_price * i.quantity
 
-        return render(request, 'home/cart.html', {'cart_data': cart})
+        get_total = 0
+        for x in cart:
+            get_total = x.get_total + get_total
+        print(get_total)
+
+        return render(request, 'home/cart.html', {'cart_data': cart, 'total_amount': get_total})
     else:
         return render(request, 'home/index.html')
+
+
+def cart_update(request, id):
+    if request.method == 'POST':
+        user = request.user
+        action = request.POST['action']
+        if action == 'add':
+            print(action)
+            carts = OrderItem.objects.filter(user=user)
+            cart = OrderItem.objects.get(id=id)
+            cart.quantity += 1
+            cart.save()
+            product_total = cart.product.product_price * cart.quantity
+            print(id)
+            print(request.POST)
+            get_total = 0
+            for x in carts:
+                get_total = x.get_total + get_total
+            return JsonResponse({"product_total": product_total, "grand_total": get_total}, safe=False)
+        elif action == 'minus':
+            print(action)
+            carts = OrderItem.objects.filter(user=user)
+            cart = OrderItem.objects.get(id=id)
+            cart.quantity -= 1
+            cart.save()
+
+            product_total = cart.product.product_price * cart.quantity
+            print(id)
+            print(request.POST)
+            get_total = 0
+            for x in carts:
+                get_total = x.get_total + get_total
+            return JsonResponse({"product_total": product_total, "grand_total": get_total}, safe=False)
+
+    else:
+        user = request.user
+        cart = OrderItem.objects.filter(user=user)
+        return render(request, 'home/cart.html', {'cart_data': cart})
 
 
 def add_cart(request, id):
     print("----------------------------------Entered add_cart function--------------------------")
     if request.user.is_authenticated:
         user = request.user
-        product = productdetail.objects.get(id=id)
+        product = ProductDetail.objects.get(id=id)
 
         # Quantity
         if OrderItem.objects.filter(product=product).exists():
@@ -181,10 +328,10 @@ def user_removeOrderItem(request, id):
 def checkout(request):
     if request.user.is_authenticated:
         user = request.user
+        print(user)
         items = OrderItem.objects.filter(user=user)
         order = Order.objects.filter(user=user)
         address = ShippingAddress.objects.filter(user=user)
-        print(address)
 
         total_price = 0
         for i in items:
@@ -197,50 +344,97 @@ def checkout(request):
         return render(request, 'home/index.html')
 
 
-def user_payment(request):
-    print("Entered user paymnet function ----------------------------")
+def add_address(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            address = request.POST['address']
+            state = request.POST['state']
+            city = request.POST['city']
+
+            address = ShippingAddress.objects.create(user=user, address=address, state=state, city=city)
+            address.save()
+            return redirect(add_address)
+        else:
+            address = ShippingAddress.objects.filter(user=user)
+            print(address)
+            return render(request, 'home/add_address.html', {'address': address})
+
+    else:
+        return redirect(user_home)
+
+
+def user_payment(request, id):
     if request.user.is_authenticated:
         print("Authenticated User")
         if request.method == 'POST':
             print("post")
             user = request.user
-            address = request.POST['address1']
-            state = request.POST['state']
-            city = request.POST['city']
+            mode = request.POST['mode']
+            transaction_id = uuid.uuid4()
+            if mode == 'Paypal':
+                return JsonResponse({'mode': mode, 'tid':transaction_id}, safe=False)
 
-            if ShippingAddress.objects.filter(address=address, state=state, city=city).exists():
-                cart = OrderItem.objects.filter(user=user)
+            else:        
                 date = datetime.datetime.now()
-                transaction_id = uuid.uuid4()
-                payment_mode = 'COD'
-            else:
-                ShippingAddress.objects.create(user=user, address=address, state=state, city=city)
-                cart = OrderItem.objects.filter(user=user)
-                date = datetime.datetime.now()
-                transaction_id = uuid.uuid4()
-                payment_mode = 'COD'
-            address_instance = ShippingAddress.objects.get(address=address)
-            for item in cart:
-                Order.objects.create(user=user, address=address_instance, product=item.product,
-                                     total_price=item.product.product_price,
-                                     transaction_id=transaction_id, date_ordered=date, complete=True,
-                                     payment_mode=payment_mode)
-                item.product.save()
-            cart.delete()
+                address = ShippingAddress.objects.get(id=id)
 
-            messages.info(request, "Placed Order")
-            return redirect(home)
-            # return render(request, 'home/payment.html')
+                cart = OrderItem.objects.filter(user=user)
+                get_total = 0
+                for x in cart:
+                    get_total = x.get_total + get_total
+                print(get_total)
+
+                
+
+                for item in cart:
+                    Order.objects.create(user=user, address=address, product=item.product,
+                                        total_price=get_total,
+                                        transaction_id=transaction_id, date_ordered=date, payment_status='Pending',
+                                        payment_mode=mode, quantity=0, order_status='Placed')
+                cart.delete()
+
+            # messages.info(request, "Placed Order")
+                return JsonResponse({'mode': mode, 'tid':transaction_id}, safe=False)
         else:
-            print("entered payment else conditioin")
-            orderItem = OrderItem.Objects.get
-            return render(request, 'home/checkout.html')
+            user = request.user
+            address = ShippingAddress.objects.get(id=id)
+            orderItem = OrderItem.objects.filter(user=user)
+
+            get_total = 0
+            for x in orderItem:
+                get_total = x.get_total + get_total
+            print(get_total)
+
+            return render(request, 'home/user_payment.html',
+                          {'address': address, 'items': orderItem, 'total_price': get_total})
     else:
         user = request.user
         cart = OrderItem.objects.filter(user=user)
         return render(request, 'home/checkout.html')
 
+def success_paypal(request):
+    if request.user.is_authenticated:
+        date = datetime.datetime.now()
+        user = request.user
+        mode = 'Paypal'
+        id = request.POST['id']
+        tid = request.POST['tid']
+        address = ShippingAddress.objects.get(id=id)
+        cart = OrderItem.objects.filter(user=user)
+        get_total = 0
+        for x in cart:
+            get_total = x.get_total + get_total
+        print(get_total)
+        for item in cart:
+            Order.objects.create(user=user, address=address, product=item.product,
+                                total_price=get_total,
+                                transaction_id=tid, date_ordered=date, payment_status='SUCCESS',
+                                payment_mode=mode, quantity=0, order_status='Placed')
+        cart.delete()
+        return JsonResponse('success',safe=False)
 
+    
 def user_order(request):
     if request.user.is_authenticated:
         user = request.user
@@ -269,4 +463,4 @@ def razorpay(request):
 
     else:
         return render(request, 'home/razorpay.html')
-# Razorpay//
+    # Razorpay//

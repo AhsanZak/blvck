@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <title>Payment</title>
+    <!--/tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Grocery Shoppy Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+    <!--//tags -->
+    <link href="{% static 'web/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+    <link href="{% static 'web/css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
+    <link href="{% static 'web/css/font-awesome.css' %}" rel="stylesheet">
+    <!-- price range -->
+    <link rel="stylesheet" type="text/css" href="{% static 'web/css/jquery-ui1.css' %}">
+    <!-- fonts -->
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800" rel="stylesheet">
+</head>
+
+<body>
+    <!-- header-bot-->
+    <div class="header-bot">
+        <div class="header-bot_inner_wthreeinfo_header_mid">
+            <!-- header-bot-->
+            <div class="col-md-4 logo_agile">
+                <h1>
+                    <a href="index.html">
+                        <span>B</span>lvck
+                        <img src="images/logo2.png" alt=" ">
+                    </a>
+                </h1>
+            </div>
+            <!-- header-bot -->
+            <div class="col-md-8 header">
+                <!-- header lists -->
+                <ul>
+                    <!-- <li>
+						<a href="#" data-toggle="modal" data-target="#myModal1">
+							<span class="fa fa-truck" aria-hidden="true"></span>Track Order</a>
+					</li> -->
+                    <li>
+                        <span class="fa fa-phone" aria-hidden="true"></span> 001 234 5678
+                    </li>
+                    <li>
+                        <a href="{% url 'user_logout' %}">
+                            <span class="fa fa-unlock-alt" aria-hidden="true"></span>Log out</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_profile' %}">
+                            <span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{user.username}} </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_order' %}">
+                            <span class="fa fa-unlock-alt" aria-hidden="true"></span> Orders </a>
+                    </li>
+                </ul>
+                <!-- //header lists -->
+                <!-- search -->
+                <div class="agileits_search">
+                    <form action="#" method="post">
+                        <input name="Search" type="search" placeholder="How can we help you today?" required="">
+                        <button type="submit" class="btn btn-default" aria-label="Left Align">
+                            <span class="fa fa-search" aria-hidden="true"> </span>
+                        </button>
+                    </form>
+                </div>
+                <!-- //search -->
+                <!-- cart details -->
+                <div class="top_nav_right">
+                    <div class="wthreecartaits wthreecartaits2 cart cart box_1">
+                        <button class="w3view-cart" type="submit" name="submit" value="">
+                            <a href="{% url 'cart' %}"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></a>
+                        </button>
+                    </div>
+                </div>
+                <!-- //cart details -->
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <!-- //header-bot -->
+    <style>
+        #paypal-button-container {
+            display: none;
+        }
+    </style>
+    <!-- navigation -->
+    <div class="ban-top">
+        <div class="container">
+            <div class="top_nav_left">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                        <div class="collapse navbar-collapse menu--shylock" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav menu__list">
+                                <li class="active">
+                                    <a class="nav-stylehead" href="{% url 'home' %}">Home
+                                        <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a class="nav-stylehead" href="about.html">About Us</a>
+                                </li>
+                                <li class="">
+                                    <a class="nav-stylehead" href="contact.html">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- //navigation -->
+
+    <!-- page -->
+    <div class="services-breadcrumb">
+        <div class="agile_inner_breadcrumb">
+            <div class="container">
+                <ul class="w3_short">
+                    <li>
+                        <a href="{% url 'home' %}">Home</a>
+                        <i>|</i>
+                    </li>
+                    <li>Payment</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- //page -->
+
+    <div class="checkout-right">
+        <h4>Order Summary</h4>
+        <div class="table-responsive">
+            <table class="timetable_sub">
+                <thead>
+                    <tr>
+                        <th>SL No.</th>
+                        <th>Quantity</th>
+                        <th>Product Name</th>
+
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in items %}
+                    <tr class="rem1">
+                        <td class="invert">1</td>
+                        <td class="invert">
+                            <div class="quantity">
+                                <div class="quantity-select">
+                                    <div class="entry value">
+                                        <span>{{x.quantity}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="invert">{{x.product.product_name}}</td>
+                        <td class="invert">${{x.get_total}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p>Total Price = ${{total_price}}</p>
+
+
+
+    <!----------------------------Deliver-TO-Previosly-USed-Addresses------------------------------>
+    <div class="card" style="width: 18rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{address.address}}</li>
+            <li class="list-group-item">{{address.state}}</li>
+            <li class="list-group-item">{{address.city}}</li>
+            <input type="text" id="address_id" hidden value="{{address.id}}">
+
+            <a>DeliveryAddress</a>
+        </ul>
+    </div>
+
+    <!----------------------------//Deliver-TO-Previosly-USed-Addresses------------------------------>
+
+    <p>Payment Method :</p>
+    <form>
+
+        <div style="display: flex;">
+            <input type="radio" id="cod" name="mode" value="COD" required>
+            <label for="cod">COD</label><br>
+            <input type="radio" id="paypal" name="mode" value="Paypal" required>
+            <label for="Paypal">Paypal</label><br>
+            <input type="radio" id="razorpay" name="mode" value="Razorpay" required>
+            <label for="razorpay">RazorPay</label><br>
+        </div>
+
+        <div style="margin-left: 4rem;"><input style="width: 47rem;" id="order" type="button" value="Place Order"
+                class="btn"></div>
+
+        <div id="paypal-button-container"></div>
+
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_EJQneGlqu2SpAQ"
+            data-amount={{razorpay_total}} data-currency="INR" data-order_id="{{payment.id}}"
+            data-buttontext="Pay with Razorpay" data-name="Esports" data-description="Ecommerce for sports"
+            data-image="https://example.com/your_logo.jpg" data-prefill.name="Hagasas"
+            data-prefill.email="Hagasas@example.com" data-theme.color="#F37254"></script>
+        <input type="hidden" custom='Hidden Element' name="hidden">
+    </form>
+
+
+
+    <!-- footer -->
+    <footer>
+        <div class="container">
+            <!-- footer third section -->
+            <div class="footer-info w3-agileits-info">
+                <!-- quick links -->
+                <div class="col-sm-5 address-right">
+                    <div class="col-xs-6 footer-grids">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li>
+                                <a href="about.html">About Us</a>
+                            </li>
+                            <li>
+                                <a href="contact.html">Contact Us</a>
+                            </li>
+                            <li>
+                                <a href="help.html">Help</a>
+                            </li>
+                            <li>
+                                <a href="faqs.html">Faqs</a>
+                            </li>
+                            <li>
+                                <a href="terms.html">Terms of use</a>
+                            </li>
+                            <li>
+                                <a href="privacy.html">Privacy Policy</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-6 footer-grids">
+                        <h3>Get in Touch</h3>
+                        <ul>
+                            <li>
+                                <i class="fa fa-map-marker"></i> 123 Sebastian, USA.
+                            </li>
+                            <li>
+                                <i class="fa fa-mobile"></i> 333 222 3333
+                            </li>
+                            <li>
+                                <i class="fa fa-phone"></i> +222 11 4444
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope-o"></i>
+                                <a href="mailto:example@mail.com"> mail@example.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- //quick links -->
+                <!-- social icons -->
+                <div class="col-sm-2 footer-grids  w3l-socialmk">
+                    <h3>Follow Us on</h3>
+                    <div class="social">
+                        <ul>
+                            <li>
+                                <a class="icon fb" href="#">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="icon tw" href="#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="icon gp" href="#">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="agileits_app-devices">
+                        <h5>Download the App</h5>
+                        <a href="#">
+                            <img src="{% static 'web/images/1.png' %}" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'web/images/2.png' %}" alt="">
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <!-- //social icons -->
+                <div class="clearfix"></div>
+            </div>
+            <!-- //footer third section -->
+            <!-- footer fourth section (text) -->
+            <div class="agile-sometext">
+                <!-- payment -->
+                <div class="sub-some child-momu">
+                    <h5>Payment Method</h5>
+                    <ul>
+                        <li>
+                            <img src="{% static 'web/images/pay2.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay5.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay1.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay4.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay6.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay3.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay7.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay8.png' %}" alt="">
+                        </li>
+                        <li>
+                            <img src="{% static 'web/images/pay9.png' %}" alt="">
+                        </li>
+                    </ul>
+                </div>
+                <!-- //payment -->
+            </div>
+            <!-- //footer fourth section (text) -->
+        </div>
+    </footer>
+    <!-- //footer -->
+    <!-- copyright -->
+    <div class="copy-right">
+        <div class="container">
+            <p>© Blvck. All rights reserved
+            </p>
+        </div>
+    </div>
+    <!-- //copyright -->
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AZ-zxKIWEzxYNP6RHnvei07eMWgRneZlEtCTRKXVnMBYSkZISPFsw0Y8WwftjBOb6n0BLn1x9mvFYN4X&currency=USD"
+        data-namespace="paypal_sdk"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"
+        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script>
+        // Render the PayPal button into #paypal-button-container
+        function paypal(tid){
+        paypal_sdk.Buttons({
+
+            // Set up the transaction
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '{{total_price}}'
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (details) {
+                    // Show a success message to the buyer
+                    console.log(details);
+
+                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                    successpaypal(tid)
+
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+        
+        }
+
+        function successpaypal(tid) {
+            var userData = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                tid: tid,
+                id:$('#address_id').val()
+
+            }
+                $.ajax({
+                    url: '/success-paypal/' ,
+                    type: "POST",
+                    data: userData,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == 'success') {
+                        window.location.replace("/")
+                        }
+                    }
+                });
+            }
+
+        var amount = 0
+        $('#order').click(function () {
+            let id = $('#address_id').val()
+            console.log(id)
+            var userData = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                mode: $("input[name='mode']:checked").val()
+
+            }
+        
+            $.ajax({
+                url: '/user-payment/' + id,
+                type: "POST",
+                data: userData,
+                dataType: "json",
+                success: function (data) {
+                    if (data.mode == 'COD')
+                        window.location.replace("/")
+                    else if(data.mode == 'Paypal'){
+                      console.log(data)
+                      $('#order').hide()
+                      $('#paypal-button-container').show()
+                      paypal(data.tid)
+                    }
+                    else if (data.mode == 'Razorpay') {
+                        console.log(data.mode)
+                        $('#order').hide()
+                        $('.razorpay-payment-button').click()
+                        amount = data.amount
+                    }
+
+                }
+            });
+         
+
+        });
+    </script>
+    <!-----------//Paypal------------->
+    <!-- jquery -->
+    <script src="{% static 'web/js/jquery-2.1.4.min.js' %}"></script>
+    <!-- //jquery -->
+    <!-- for bootstrap working -->
+    <script src="{% static 'web/js/bootstrap.js' %}"></script>
+    <!-- //for bootstrap working -->
+    <!-- //js-files -->
+</body>
+
+</html>

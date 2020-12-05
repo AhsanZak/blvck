@@ -42,6 +42,9 @@
                     <a href="{% url 'manage_order' %}"><i class="fas fa-user-friends"></i>Order</a>
                 </li>
                 <li>
+                    <a href="{% url 'order_report' %}" ><i class="fas fa-user-shield"></i>Order Report</a>
+                </li>
+                <li>
                     <a href="settings.html"><i class="fas fa-cog"></i>Settings</a>
                 </li>
             </ul>
@@ -96,13 +99,13 @@
                                 <tbody>
                                     {% for tid, x in table_data.items %}
                                     <tr>
-                                        <td>{{x}}</td>
+                                        <td>{{forloop.counter}}</td>
                                         <td>{{x.transaction_id}}</td>
                                         <td>{{x.user.first_name}}</td>
                                         <td>{{x.address.address}} ,{{x.address.city}},{{x.address.state}}</td>
                                         <td>{{x.date_ordered}}</td>
                                         <td>{{x.total_price}}</td>
-                                        <td>{{x.complete}}</td>
+                                        <td>{{x.order_status}}</td>
                                         <td>{{x.payment_mode}}</td>
                                         <td>
                                            <a href="{% url 'cancel_order' x.transaction_id %}" type="submit" class="btn btn-outline-danger btn-rounded">Cancel/Place Order</a>

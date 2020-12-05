@@ -42,6 +42,9 @@
                     <a href="{% url 'manage_order' %}"><i class="fas fa-user-friends"></i>Order</a>
                 </li>
                 <li>
+                    <a href="{% url 'order_report' %}" ><i class="fas fa-user-shield"></i>Order Report</a>
+                </li>
+                <li>
                     <a href="settings.html"><i class="fas fa-cog"></i>Settings</a>
                 </li>
             </ul>
@@ -93,6 +96,7 @@
                                         <td>{{x.id}}</td>
                                         <td>{{x.category_name}}</td>
                                         <td class="text-right">
+                                            <a href="{% url 'update_category' x.id %}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
                                             <a href="{% url 'delete_category' x.id %}" type="submit" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
                                         </td>
                                     </tr>

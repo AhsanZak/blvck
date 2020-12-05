@@ -228,7 +228,7 @@
 <!--&lt;!&ndash;				{% for x in address %}&ndash;&gt;-->
 <!--				<div class="col-sm-6 p-5">-->
 <!--				  <div class="card">-->
-<!--					<div class="card-body">-->
+<!--		ress			<div class="card-body">-->
 
 <!--					  <p class="card-text">{{x.address}}<p>-->
 <!--					  <p class="card-text">{{x.state}}<p>-->
@@ -686,47 +686,25 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         </div>
         <p>Total Price = ${{total_price}}</p>
         <!-- addresses showing  -->
-        <br><br><br>
-        <div class="row">
-            {% for x in address %}
-            <div class="col-sm-6 p-5">
-                <div class="card">
-                    <div class="card-body">
+			<br><br><br>
+			<div class="row">
+				{% for x in address %}
+				<div class="col-sm-6 p-5">
+				  <div class="card">
+					<div class="card-body">
 
-                        <p class="card-text">{{x.address}}
-                        <p>
-                        <p class="card-text">{{x.state}}
-                        <p>
-                        <p class="card-text">{{x.city}}
-                        <p></p>
-                        <p class="card-text">{{x.zipcode}}
-                        <p></p>
-                        <button href="#" class="btn btn-primary"
-                                onclick="addAddress('{{x.address}}','{{x.state}}','{{x.city}}','{{x.zipcode}}','{{x.id}}')">
-                            Delivery To This Address
-                        </button>
-                    </div>
+					  <p class="card-text">{{x.address}}<p>
+					  <p class="card-text">{{x.state}}<p>
+					  <p class="card-text">{{x.city}}<p></p>
+					  <p class="card-text">{{x.zipcode}}<p></p>
+					  <button href="#" class="btn btn-primary" onclick="addAddress('{{x.address}}','{{x.state}}','{{x.city}}')">Delivery To This Address</button>
+					</div>
 
-                    <br>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <!--			testing cards -->
-        <!--			<div class="row">-->
-        <!--				hsvdcgf-->
-        <!--				{% for x in address %}-->
-        <!--  				<div class="column">-->
-        <!--   				 <div class="card">-->
-        <!--     			 <p>{{x.address}}</p>-->
-        <!--    			  <p>{{x.city}}</p>-->
-        <!--    			  <p>{{x.state}}</p>-->
-        <!--    			</div>-->
-        <!-- 				 </div>-->
-        <!--				{% endfor %}-->
-        <!--				</div>-->
-
-        <!--			// testing cards -->
+					<br>
+				  </div>
+				</div>
+				{% endfor %}
+			  </div>
         <br><br>
         <h3>Add Another Address</h3>
         <!-- //addresses showing  -->
@@ -760,9 +738,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 </div>
                                 <div class="controls">
                                     <input id="idc" type="text" placeholder="Town/City" name="city" required="">
-                                </div>
-                                <div class="controls">
-                                    <input id="idz" type="text" placeholder="Zipcode" name="zipcode" required="">
                                 </div>
                             </div>
                         </div>
@@ -831,6 +806,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <script src="https://www.paypal.com/sdk/js?client-id=AZ-zxKIWEzxYNP6RHnvei07eMWgRneZlEtCTRKXVnMBYSkZISPFsw0Y8WwftjBOb6n0BLn1x9mvFYN4X&currency=USD"></script>
 
                 <script>
+                var total = 970
         // Render the PayPal button into #paypal-button-container
         paypal.Buttons({
 
@@ -839,7 +815,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: '50'
+                            value: total
                         }
                     }]
                 });
@@ -1057,8 +1033,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		});
 
 </script>
-<!-- //cart-js -->
+<!--                address from card -->
+  <script>
+						function addAddress(address,state,city) {
+							document.getElementById("ida").value = address
+							$('#ida').attr("readOnly", "true");
+							document.getElementById("ids").value = state
+							$('#ids').attr("readOnly", "true");
+							document.getElementById("idc").value = city
+							$('#idc').attr("readOnly", "true");
 
+						}
+
+					  </script>
+<!--                    //address from card -->
 <!--quantity-->
 <script>
 		$('.value-plus').on('click', function () {
