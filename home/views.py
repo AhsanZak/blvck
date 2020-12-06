@@ -257,7 +257,7 @@ def cart(request):
 
         return render(request, 'home/cart.html', {'cart_data': cart, 'total_amount': get_total})
     else:
-        return render(request, 'home/index.html')
+        return render(request, 'home/user_login.html')
 
 
 def cart_update(request, id):
@@ -315,7 +315,7 @@ def add_cart(request, id):
 
         return redirect(cart)
     else:
-        return render(request, 'home/index.html')
+        return render(request, 'home/user_login.html')
 
 
 def user_removeOrderItem(request, id):
