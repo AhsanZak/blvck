@@ -319,7 +319,7 @@ def add_cart(request, id):
         return render(request, 'home/user_login.html')
 
 
-def user_removeOrderItem(request, id):
+def user_remove_order_item(request, id):
     b = OrderItem.objects.get(id=id)
     b.delete()
     print("Deleted Order")

@@ -27,7 +27,7 @@ urlpatterns = [
 
     path('user-payment/<int:id>', views.user_payment, name="user_payment"),
     path('user-order/', views.user_order, name="user_order"),
-    path('user-removeOrderItem/<int:id>', views.user_removeOrderItem, name="user_removeOrderItem"),
+    path('user-removeOrderItem/<int:id>', views.user_remove_order_item, name="user_removeOrderItem"),
     path('success-paypal/', views.success_paypal, name="success_paypal"),
     path('success-razorpay/', views.success_razorpay, name="success_razorpay"),
 
