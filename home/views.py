@@ -19,10 +19,10 @@ import json
 
 def home(request):
     if request.user.is_authenticated:
+        return redirect(user_home)
+    else:
         product = ProductDetail.objects.all()
-        return render(request, 'home/user_index.html', {'product_data': product})
-    product = ProductDetail.objects.all()
-    return render(request, 'home/index.html', {'product_data': product})
+        return render(request, 'home/index.html', {'product_data': product})
 
 
 def user_home(request):
@@ -153,7 +153,6 @@ def user_login(request):
 
 
 def user_signup(request):
-    print("Entered user signup")
     if request.method == 'POST':
         first_name = request.POST['full_name']
         email = request.POST['email']
@@ -198,8 +197,7 @@ def user_profile(request):
         return redirect(user_home)
 
 
-def edit_userProfile(request):
-    print("Entered  User Profile Pic Edit")
+def edit_user_profile(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             user_image = request.FILES.get('user_image')
@@ -231,8 +229,11 @@ def edit_userProfile(request):
 
 
 def user_logout(request):
-    auth.logout(request)
-    return render(request, 'home/index.html')
+    if request.user.is_authenticated:
+        auth.logout(request)
+        return redirect(home)
+    else:
+        return redirect(home)
 
 
 def view_single(request, id):
@@ -373,9 +374,11 @@ def user_payment(request, id):
             mode = request.POST['mode']
             transaction_id = uuid.uuid4()
             if mode == 'Paypal':
-                return JsonResponse({'mode': mode, 'tid':transaction_id}, safe=False)
+                return JsonResponse({'mode': mode, 'tid': transaction_id}, safe=False)
+            elif mode == 'Razorpay':
+                return JsonResponse({'mode':mode, 'tid': transaction_id}, safe=False)    
 
-            else:        
+            else:
                 date = datetime.datetime.now()
                 address = ShippingAddress.objects.get(id=id)
 
@@ -385,17 +388,13 @@ def user_payment(request, id):
                     get_total = x.get_total + get_total
                 print(get_total)
 
-                
-
                 for item in cart:
                     Order.objects.create(user=user, address=address, product=item.product,
-                                        total_price=get_total,
-                                        transaction_id=transaction_id, date_ordered=date, payment_status='Pending',
-                                        payment_mode=mode, quantity=0, order_status='Placed')
+                                         total_price=get_total,
+                                         transaction_id=transaction_id, date_ordered=date, payment_status='Pending',
+                                         payment_mode=mode, quantity=0, order_status='Placed')
                 cart.delete()
-
-            # messages.info(request, "Placed Order")
-                return JsonResponse({'mode': mode, 'tid':transaction_id}, safe=False)
+                return JsonResponse({'mode': mode, 'tid': transaction_id}, safe=False)
         else:
             user = request.user
             address = ShippingAddress.objects.get(id=id)
@@ -413,6 +412,30 @@ def user_payment(request, id):
         cart = OrderItem.objects.filter(user=user)
         return render(request, 'home/checkout.html')
 
+
+def success_razorpay(request):
+     if request.user.is_authenticated:
+        print("Success Razorpay Function -------------------------------------------------******************************* ")
+        date = datetime.datetime.now()
+        user = request.user
+        mode = 'Razorpay'
+        id = request.POST['id']
+        tid = request.POST['tid']
+        address = ShippingAddress.objects.get(id=id)
+        cart = OrderItem.objects.filter(user=user)
+        get_total = 0
+        for x in cart:
+            get_total = x.get_total + get_total
+        print(get_total)
+        for item in cart:
+            Order.objects.create(user=user, address=address, product=item.product,
+                                 total_price=get_total,
+                                 transaction_id=tid, date_ordered=date, payment_status='SUCCESS',
+                                 payment_mode=mode, quantity=0, order_status='Placed')
+        cart.delete()
+        return JsonResponse('success', safe=False)
+
+
 def success_paypal(request):
     if request.user.is_authenticated:
         date = datetime.datetime.now()
@@ -428,13 +451,13 @@ def success_paypal(request):
         print(get_total)
         for item in cart:
             Order.objects.create(user=user, address=address, product=item.product,
-                                total_price=get_total,
-                                transaction_id=tid, date_ordered=date, payment_status='SUCCESS',
-                                payment_mode=mode, quantity=0, order_status='Placed')
+                                 total_price=get_total,
+                                 transaction_id=tid, date_ordered=date, payment_status='SUCCESS',
+                                 payment_mode=mode, quantity=0, order_status='Placed')
         cart.delete()
-        return JsonResponse('success',safe=False)
+        return JsonResponse('success', safe=False)
 
-    
+
 def user_order(request):
     if request.user.is_authenticated:
         user = request.user
@@ -464,3 +487,4 @@ def razorpay(request):
     else:
         return render(request, 'home/razorpay.html')
     # Razorpay//
+

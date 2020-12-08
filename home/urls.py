@@ -14,7 +14,7 @@ urlpatterns = [
     path('view-single/<int:id>', views.view_single, name="single"),
     path('user-home/', views.user_home, name="user_home"),
     path('user-profile/', views.user_profile, name="user_profile"),
-    path('user-editprofile/', views.edit_userProfile, name="edit_userProfile"),
+    path('user-editprofile/', views.edit_user_profile, name="edit_userProfile"),
     path('user_logout', views.user_logout, name="user_logout"),
 
     path('add-cart/<int:id>', views.add_cart, name="add_cart"),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('user-order/', views.user_order, name="user_order"),
     path('user-removeOrderItem/<int:id>', views.user_removeOrderItem, name="user_removeOrderItem"),
     path('success-paypal/', views.success_paypal, name="success_paypal"),
+    path('success-razorpay/', views.success_razorpay, name="success_razorpay"),
 
     path('razorpay', views.razorpay, name="razorpay"),
 ]
