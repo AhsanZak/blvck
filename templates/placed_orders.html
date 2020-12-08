@@ -44,9 +44,6 @@
                 <li>
                     <a href="{% url 'order_report' %}" ><i class="fas fa-user-shield"></i>Order Report</a>
                 </li>
-                <li>
-                    <a href="settings.html"><i class="fas fa-cog"></i>Settings</a>
-                </li>
             </ul>
         </nav>
 
@@ -88,9 +85,9 @@
                             <form method="post">
                             {% csrf_token %}
                             <h5>From</h5>
-                            <input type="date" id="start_date" name="start_date">
+                            <input type="date" id="start_date" name="start_date" required>
                             <h5>To</h5>
-                            <input type="date" id="end_date" name="end_date">
+                            <input type="date" id="end_date" name="end_date" required>
                             <button type="submit">Submit</button>
                             </form>
                         </div>

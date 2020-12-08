@@ -45,9 +45,6 @@
                 <li>
                     <a href="{% url 'order_report' %}" ><i class="fas fa-user-shield"></i>Order Report</a>
                 </li>
-                <li>
-                    <a href="settings.html"><i class="fas fa-cog"></i>Settings</a>
-                </li>
             </ul>
         </nav>
 
@@ -114,14 +111,14 @@
 
             <!-- button for adding img -->
             <div class="input-group form-group">
-              <button type="button" class="btn btn-primary" id="img-button">add img</button>
+              <button type="button" class="btn btn-primary" id="img-button" >Add Product Image</button>
             </div>
 
             <!-- result of cropped img -->
             <img id="cropped" class="cropped" src="">
 
             <!-- hidden field -->
-            <input class="d-none" type="file" id="file-input">
+            <input class="d-none" type="file" id="file-input" required>
             <textarea name="pro_img" class="d-none" id="imageBaseData"></textarea>
 
             <button class="btn btn-primary shadow-2 mb-4 ">Add Product</button>

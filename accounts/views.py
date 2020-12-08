@@ -237,12 +237,14 @@ def manage_category(request):
     value = Category.objects.all().order_by('id')
     return render(request, 'category_management.html', {'value': value})
 
+
 def update_category(request, id):
     if request.session.has_key('password'):
         category = Category.objects.get(id=id)
         return render(request, 'edit_category.html', {'category': category})
     else:
         return redirect(admin_login)
+
 
 def edit_category(request, id):
     if request.session.has_key('password'):
@@ -255,6 +257,7 @@ def edit_category(request, id):
             return render(request, 'edit_category.html')
     else:
         return redirect(admin_login)
+
 
 def add_category(request):
     if request.method == 'POST':
@@ -305,10 +308,31 @@ def order_report(request):
     if request.method == 'POST':
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
-        orderdates = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
+        order_dates = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
         pending = Order.objects.filter(date_ordered__range=[start_date, end_date], order_status='Pending').count()
 
-        return render(request, 'order_report.html', {'orderdates': orderdates, 'pending': pending})
+        order = Order.objects.filter(date_ordered__range=[start_date, end_date])
+        order_dict = {}
+        for x in order:
+            if not x.transaction_id in order_dict.keys():
+                order_dict[x.transaction_id] = x
+        total_sales = 0
+        dict2 = {}
+        total_amount = 0
+
+        for date, items in order_dict.items():
+            if not items.date_ordered in dict2.keys():
+                dict2[items.date_ordered] = {'price': items.total_price}
+                total_amount += items.total_price
+            else:
+                dict2[items.date_ordered]['price'] += items.total_price
+                total_amount += items.total_price
+
+
+
+
+        return render(request, 'order_report.html', {'order_dates': order_dates, 'pending': pending,
+                                                     'table_data': order_dict, 'total_sales': dict2, 'total_amount': total_amount })
     else:
         return render(request, 'order_report.html')
 
@@ -324,12 +348,13 @@ def pending_order(request):
                 if not x.transaction_id in order_dict.keys():
                     order_dict[x.transaction_id] = x
             pending = Order.objects.filter(order_status='Pending').count()
-            return render(request, 'pending_order.html', {'table_data': order_dict, 'pending':pending})
+            return render(request, 'pending_order.html', {'table_data': order_dict, 'pending': pending})
         else:
             pending = Order.objects.filter(order_status='Pending').count()
             return render(request, 'pending_order.html', {'pending': pending})
     else:
         return redirect(admin_login)
+
 
 def placed_order(request):
     if request.session.has_key('password'):
@@ -348,6 +373,7 @@ def placed_order(request):
             return render(request, 'placed_orders.html', {'placed': placed})
     else:
         return redirect(admin_login)
+
 
 def cancelled_order(request):
     if request.session.has_key('password'):
