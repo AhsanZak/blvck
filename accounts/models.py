@@ -29,6 +29,6 @@ class ProductDetail(models.Model):
     def ImageURL(self):
         try:
             url = self.product_image.url
-        except AttributeError:
+        except ValueError:
             url = ''
         return url

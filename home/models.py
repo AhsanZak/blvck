@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     def ImageURL(self):
         try:
             url = self.user_image.url
-        except:
+        except ValueError:
             url = ''
         return url
 

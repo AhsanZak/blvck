@@ -159,7 +159,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     </div>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <p style="color:black; font-weight:bold;">Total Price = ${{total_price}}</p>
+    <p style="color:black; font-weight:bold;">Total Amount = ${{total_price}}</p>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -181,30 +181,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     </div>
     <!----------------------------//Deliver-TO-Previosly-USed-Addresses------------------------------>
 
+    <div class="container">
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p style="color:black">Payment Method :</p>
+
     <form>
-
-        <div style="display: flex;">
-            <input type="radio" id="cod" name="mode" value="COD" required>
-            <label for="cod">COD</label><br>
-            <input type="radio" id="paypal" name="mode" value="Paypal" required>
-            <label for="Paypal">Paypal</label><br>
-            <input type="radio" id="razorpay" name="mode" value="Razorpay" required>
-            <label for="razorpay">RazorPay</label><br>
+        <div class="row">
+                <div class="col-md-12">
+                    <div style="display: flex;">
+                        <input type="radio" id="cod" name="mode" value="COD" required>
+                        <label for="cod">COD</label><br>
+                        <input type="radio" id="paypal" name="mode" value="Paypal" required>
+                        <label for="Paypal">Paypal</label><br>
+                        <input type="radio" id="razorpay" name="mode" value="Razorpay" required>
+                        <label for="razorpay">RazorPay</label><br>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div>
+                        <input style="width: 30vw;" id="order" type="button" value="Place Order" class="btn button2 ">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="paypal-button-container"></div>
+                </div>
+            <input type="hidden" custom='Hidden Element' name="hidden">
         </div>
-
-        <div style="margin-left: 4rem;"><input style="width: 47rem;" id="order" type="button" value="Place Order"
-                class="btn button2 "></div>
-
-        <div id="paypal-button-container"></div>
-
-
-        <input type="hidden" custom='Hidden Element' name="hidden">
     </form>
 
 
-
+</div>
     <!-- footer -->
     <footer>
         <div class="container">
