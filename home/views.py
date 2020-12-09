@@ -44,7 +44,6 @@ def otp_login(request):
             otp = 0
             url = "https://d7networks.com/api/verifier/send"
             number = str(91) + number
-            print(number)
             payload = {
                 'mobile': number,
                 'sender_id': 'SMSINFO',
@@ -56,14 +55,9 @@ def otp_login(request):
                 'Authorization': 'Token b76a52adeb253e2dbb98dd2378d542f8d53fbe6b'
             }
             response = requests.request("POST", url, headers=headers, data=payload, files=files)
-            print(response.text.encode('utf8'))
-
             data = response.text.encode('utf8')
             datadict = json.loads(data)
-            print('datadict:', datadict)
-
             id = datadict['otp_id']
-            print('id:', id)
             request.session['id'] = id
 
             return render(request, 'home/otplogin.html', {'otp': otp})
@@ -80,11 +74,8 @@ def verify_otp(request):
     else:
         if request.method == 'POST':
             otp = request.POST['otp']
-            print(otp)
-
             id_otp = request.session['id']
             url = "https://d7networks.com/api/verifier/verify"
-
             payload = {'otp_id': id_otp,
                        'otp_code': otp}
             files = [
@@ -95,8 +86,6 @@ def verify_otp(request):
             }
 
             response = requests.request("POST", url, headers=headers, data=payload, files=files)
-
-            print(response.text.encode('utf8'))
             data = response.text.encode('utf8')
             datadict = json.loads(data)
             status = datadict['status']
@@ -104,10 +93,12 @@ def verify_otp(request):
             if status == 'success':
                 number = request.session['number']
                 user = User.objects.filter(last_name=number).first()
+
                 if user is not None:
                     if user.is_active == False:
                         messages.info(request, 'User is blocked')
                         return redirect(user_login)
+
                     else:
                         auth.login(request, user)
                         return redirect(user_home)
@@ -124,11 +115,9 @@ def verify_otp(request):
 
 def user_login(request):
     if request.user.is_authenticated:
-        print("User is authenticated")
         return redirect('user_home')
 
     if request.method == 'POST':
-        print("Login the User ")
 
         username = request.POST['username']
         password = request.POST['password']
@@ -137,7 +126,6 @@ def user_login(request):
 
         if user is not None and check_password(password, user.password):
             if user.is_active == False:
-                print("user is not none")
                 messages.info(request, 'User is Blocked')
                 return redirect('user_login')
             else:
@@ -161,8 +149,6 @@ def user_signup(request):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
-        print("User values enterede")
-
         if password1 == password2:
             if User.objects.filter(username=username).exists():
                 messages.info(request, "Username Taken")
@@ -178,9 +164,6 @@ def user_signup(request):
                                                 first_name=first_name,
                                                 last_name=last_name)
                 user.save()
-                print("User created")
-                print(username)
-                print(password1)
                 return redirect('user_login')
 
     else:
@@ -237,30 +220,23 @@ def user_logout(request):
 
 
 def view_single(request, id):
-    print(id)
     product = ProductDetail.objects.filter(id=id).first()
     return render(request, 'home/single.html', {'product': product})
 
 
 def cart(request):
-    print("--------------------------------Entered cart function---------------------------------")
     if request.user.is_authenticated:
         user = request.user
         cart = OrderItem.objects.filter(user=user)
-        print(cart)
-        print(user.id)
-
         for i in cart:
             i.total_price = i.product.product_price * i.quantity
 
         get_total = 0
         for x in cart:
             get_total = x.get_total + get_total
-        print(cart)
-
         return render(request, 'home/cart.html', {'cart_data': cart, 'total_amount': get_total})
     else:
-        return render(request, 'home/user_login.html')
+        return redirect(user_home)
 
 
 def cart_update(request, id):
@@ -268,28 +244,22 @@ def cart_update(request, id):
         user = request.user
         action = request.POST['action']
         if action == 'add':
-            print(action)
             carts = OrderItem.objects.filter(user=user)
             cart = OrderItem.objects.get(id=id)
             cart.quantity += 1
             cart.save()
             product_total = cart.product.product_price * cart.quantity
-            print(id)
-            print(request.POST)
             get_total = 0
             for x in carts:
                 get_total = x.get_total + get_total
             return JsonResponse({"product_total": product_total, "grand_total": get_total}, safe=False)
         elif action == 'minus':
-            print(action)
             carts = OrderItem.objects.filter(user=user)
             cart = OrderItem.objects.get(id=id)
             cart.quantity -= 1
             cart.save()
 
             product_total = cart.product.product_price * cart.quantity
-            print(id)
-            print(request.POST)
             get_total = 0
             for x in carts:
                 get_total = x.get_total + get_total
@@ -302,8 +272,6 @@ def cart_update(request, id):
 
 
 def add_cart(request, id):
-    print("----------------------------------Entered add_cart function--------------------------")
-
     if request.user.is_authenticated:
         user = request.user
         product = ProductDetail.objects.get(id=id)
@@ -313,9 +281,7 @@ def add_cart(request, id):
             order = OrderItem.objects.get(product=product, user=user)
             order.quantity += 1
             order.save()
-            print("a", id)
         else:
-            print("v", id)
             quantity = 1
             OrderItem.objects.create(user=user, product=product, quantity=quantity)
 
@@ -327,14 +293,12 @@ def add_cart(request, id):
 def user_remove_order_item(request, id):
     b = OrderItem.objects.get(id=id)
     b.delete()
-    print("Deleted Order")
     return redirect(cart)
 
 
 def checkout(request):
     if request.user.is_authenticated:
         user = request.user
-        print(user)
         items = OrderItem.objects.filter(user=user)
         order = Order.objects.filter(user=user)
         address = ShippingAddress.objects.filter(user=user)
@@ -363,7 +327,6 @@ def add_address(request):
             return redirect(add_address)
         else:
             address = ShippingAddress.objects.filter(user=user)
-            print(address)
             return render(request, 'home/add_address.html', {'address': address})
 
     else:
@@ -372,9 +335,7 @@ def add_address(request):
 
 def user_payment(request, id):
     if request.user.is_authenticated:
-        print("Authenticated User")
         if request.method == 'POST':
-            print("post")
             user = request.user
             mode = request.POST['mode']
             transaction_id = uuid.uuid4()
@@ -391,8 +352,6 @@ def user_payment(request, id):
                 get_total = 0
                 for x in cart:
                     get_total = x.get_total + get_total
-                print(get_total)
-
                 for item in cart:
                     Order.objects.create(user=user, address=address, product=item.product,
                                          total_price=get_total,
@@ -408,7 +367,6 @@ def user_payment(request, id):
             get_total = 0
             for x in orderItem:
                 get_total = x.get_total + get_total
-            print(get_total)
 
             return render(request, 'home/user_payment.html',
                           {'address': address, 'items': orderItem, 'total_price': get_total})
@@ -420,8 +378,6 @@ def user_payment(request, id):
 
 def success_razorpay(request):
     if request.user.is_authenticated:
-        print(
-            "Success Razorpay Function -------------------------------------------------******************************* ")
         date = datetime.datetime.now()
         user = request.user
         mode = 'Razorpay'
@@ -432,7 +388,6 @@ def success_razorpay(request):
         get_total = 0
         for x in cart:
             get_total = x.get_total + get_total
-        print(get_total)
         for item in cart:
             Order.objects.create(user=user, address=address, product=item.product,
                                  total_price=get_total,
@@ -454,7 +409,6 @@ def success_paypal(request):
         get_total = 0
         for x in cart:
             get_total = x.get_total + get_total
-        print(get_total)
         for item in cart:
             Order.objects.create(user=user, address=address, product=item.product,
                                  total_price=get_total,
@@ -475,7 +429,6 @@ def user_order(request):
                 order_dict[x.transaction_id].order_price = order_dict[x.transaction_id].total_price
             else:
                 order_dict[x.transaction_id].order_price += order_dict[x.transaction_id].total_price
-        print(order_dict)
         return render(request, 'home/user_order.html', {'item_data': order_dict})
     return render(request, 'home/index.html')
 
