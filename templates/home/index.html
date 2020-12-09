@@ -258,7 +258,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								</div>
 								<div class="item-info-product ">
 									<h4>
-										<a href="single.html">{{x.product_name}}</a>
+										<a href="{% url 'single' x.id %}">{{x.product_name}}</a>
 									</h4>
 									<div class="info-product-price">
 										<span class="item_price">{{x.product_price}}</span>
@@ -328,7 +328,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								</div>
 								<div class="item-info-product ">
 									<h4>
-										<a href="single.html">{{x.product_name}}</a>
+										<a href="{% url 'single' x.id %}">{{x.product_name}}</a>
 									</h4>
 									<div class="info-product-price">
 										<span class="item_price">{{x.product_price}}</span>
@@ -384,7 +384,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								</div>
 								<div class="item-info-product ">
 									<h4>
-										<a href="single.html">{{x.product_name}}</a>
+										<a href="{% url 'single' x.id %}">{{x.product_name}}</a>
 									</h4>
 									<div class="info-product-price">
 										<span class="item_price">{{x.product_price}}</span>
