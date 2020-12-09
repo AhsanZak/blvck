@@ -247,6 +247,8 @@ def cart(request):
     if request.user.is_authenticated:
         user = request.user
         cart = OrderItem.objects.filter(user=user)
+        print(cart)
+        print(user.id)
 
         for i in cart:
             i.total_price = i.product.product_price * i.quantity
@@ -254,7 +256,7 @@ def cart(request):
         get_total = 0
         for x in cart:
             get_total = x.get_total + get_total
-        print(get_total)
+        print(cart)
 
         return render(request, 'home/cart.html', {'cart_data': cart, 'total_amount': get_total})
     else:
@@ -301,16 +303,19 @@ def cart_update(request, id):
 
 def add_cart(request, id):
     print("----------------------------------Entered add_cart function--------------------------")
+
     if request.user.is_authenticated:
         user = request.user
         product = ProductDetail.objects.get(id=id)
 
         # Quantity
-        if OrderItem.objects.filter(product=product).exists():
-            order = OrderItem.objects.get(product=product)
+        if OrderItem.objects.filter(product=product, user=user).exists():
+            order = OrderItem.objects.get(product=product, user=user)
             order.quantity += 1
             order.save()
+            print("a", id)
         else:
+            print("v", id)
             quantity = 1
             OrderItem.objects.create(user=user, product=product, quantity=quantity)
 
@@ -376,7 +381,7 @@ def user_payment(request, id):
             if mode == 'Paypal':
                 return JsonResponse({'mode': mode, 'tid': transaction_id}, safe=False)
             elif mode == 'Razorpay':
-                return JsonResponse({'mode':mode, 'tid': transaction_id}, safe=False)    
+                return JsonResponse({'mode': mode, 'tid': transaction_id}, safe=False)
 
             else:
                 date = datetime.datetime.now()
@@ -414,8 +419,9 @@ def user_payment(request, id):
 
 
 def success_razorpay(request):
-     if request.user.is_authenticated:
-        print("Success Razorpay Function -------------------------------------------------******************************* ")
+    if request.user.is_authenticated:
+        print(
+            "Success Razorpay Function -------------------------------------------------******************************* ")
         date = datetime.datetime.now()
         user = request.user
         mode = 'Razorpay'
@@ -487,4 +493,3 @@ def razorpay(request):
     else:
         return render(request, 'home/razorpay.html')
     # Razorpay//
-

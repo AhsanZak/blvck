@@ -83,31 +83,33 @@
                             </div>
                         </div>
                     </div>
-<!--                    <div class="col-sm-6 col-md-6 col-lg-3 mt-3">-->
-<!--                        <div class="card">-->
-<!--                            <div class="content">-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-sm-4">-->
-<!--                                        <div class="icon-big text-center">-->
-<!--                                            <i class="olive fas fa-money-bill-alt"></i>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="col-sm-8">-->
-<!--                                        <div class="detail text-center">-->
-<!--                                            <p>Revenue</p>-->
-<!--                                            <span class="number">$180,900.00</span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="footer">-->
-<!--                                    <hr/>-->
-<!--                                    <div class="stats">-->
-<!--                                        <i class="fas fa-calendar"></i> In this current Month-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+
+                    <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="icon-big text-center">
+                                            <i class="olive fas fa-money-bill-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="detail text-center">
+                                            <p>Revenue</p>
+                                            <span class="number">${{total_revenue}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr/>
+                                    <div class="stats">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                         <div class="card">
                             <div class="content">
@@ -127,7 +129,7 @@
                                 <div class="footer">
                                     <hr/>
                                     <div class="stats">
-                                        <i class="fas fa-stopwatch"></i> In the last 24 Hour
+                                        <i class="fas fa-stopwatch"></i>
                                     </div>
                                 </div>
                             </div>
@@ -194,34 +196,9 @@
 
                 <div class="row">
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="content">
-                                    <div class="head">
-                                        <h4 class="mb-0">Traffic Overview</h4>
-                                        <p class="text-muted">Your year long website traffic data</p>
-                                    </div>
-                                    <div class="canvas-wrapper">
-                                        <canvas class="chart" id="trafficflow"></canvas>
-                                    </div>
-                                    <div class="ui hidden divider"></div>
-                                </div>
-                            </div>
+                            <canvas id="myChart"></canvas>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="content">
-                                    <div class="head">
-                                        <h4 class="mb-0">Sales Overview</h4>
-                                        <p class="text-muted">Your year long sales data</p>
-                                    </div>
-                                    <div class="canvas-wrapper">
-                                        <canvas class="chart" id="sales"></canvas>
-                                    </div>
-                                    <div class="ui hidden divider"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
 
 
@@ -300,85 +277,68 @@
 
 <script>
 
+        var totalusers = '{{no_users}}'
+        var totalproducts = '{{no_product}}'
+        var totalorders = '{{no_order}}'
 
-var trafficchart = document.getElementById("trafficflow");
-var saleschart = document.getElementById("sales");
+        let myChart = document.getElementById('myChart').getContext('2d');
 
-var x = {{x}}
+        // Global Propeties
 
-var myChart1 = new Chart(trafficchart, {
-    type: 'line',
-    data: {
-            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-            datasets: [{
-                backgroundColor: "rgba(48, 164, 255, 0.5)",
-                borderColor: "rgba(48, 164, 255, 0.8)",
-                data: [x, x, x,'1168', '1150', '1145','1155', '1155', '1150','1160', '1185', '1190'],
-                label: '',
-                fill: true
-            }]
-    },
-    options: {
-        responsive: true,
-        title: {display: false,text: 'Chart'},
-        legend: {position: 'top',display: false,},
-        tooltips: {mode: 'index',intersect: false,},
-        hover: {mode: 'nearest',intersect: true},
-        scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Months'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Number of Visitors'
-                }
-            }]
-        }
-    }
-});
 
-var myChart2 = new Chart(saleschart, {
-    type: 'bar',
-    data: {
-        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        datasets: [{
-            label: 'Income',
-            backgroundColor: "rgba(76, 175, 80, 0.5)",
-            borderColor: "#6da252",
-            borderWidth: 1,
-            data: ["280","300","400","600","450","400","500","550","450","650","950","1000"],
-        }]
-    },
-    options: {
-        responsive: true,
-        title: {display: false,text: 'Chart'},
-        legend: {position: 'top',display: false,},
-        tooltips: {mode: 'index',intersect: false,},
-        hover: {mode: 'nearest',intersect: true},
-        scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
+        let massPopChart = new Chart(myChart, {
+            type: 'doughnut',
+            data: {
+                labels: ['Total Users', 'Total Orders', 'Total Products'],
+                datasets: [{
+                    label: 'Population',
+                    data: [
+                        totalusers,
+                        totalorders,
+                        totalproducts,
+                    ],
+                    label: 'Population',
+                    backgroundColor: [
+                        '#7fffd4',
+                        '#00BFFF',
+                        '#6495ed',
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#6da252',
+                    hoverBorderWidth: 0.1,
+                    hoverBorderColor: 'yellow'
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
                     display: true,
-                    labelString: 'Months'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
+                    text: 'Blvck Paris',
+                    fontSize: 20,
+                    fontColor: 'black'
+                },
+                legend: {
                     display: true,
-                    labelString: 'Number of Sales'
+                    position: 'right',
+                    labels: {
+                        fontColor: 'black',
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        bottom: 0,
+                        top: 0,
+                    }
+                },
+                tooltips: {
+                    mode: 'index',
+                    axis: 'X'
+
                 }
-            }]
-        }
-    }
-});
+            }
+        });
 
 </script>
 

@@ -5,7 +5,7 @@ from django.contrib import messages
 from .models import UserDetail
 from .models import ProductDetail, Category
 from home.models import *
-
+import datetime
 import base64
 from django.core.files.base import ContentFile
 
@@ -18,8 +18,28 @@ def admin_panel(request):
         x = 1000
         no_order = Order.objects.count()
         no_product = ProductDetail.objects.count()
+
+
+        order = Order.objects.filter(date_ordered__range=['2020-10-01', '2030-01-01'])
+        order_dict = {}
+        for x in order:
+            if not x.transaction_id in order_dict.keys():
+                order_dict[x.transaction_id] = x
+        total_sales = 0
+        dict2 = {}
+        total_amount = 0
+
+        for date, items in order_dict.items():
+            if not items.date_ordered in dict2.keys():
+                dict2[items.date_ordered] = {'price': items.total_price}
+                total_amount += items.total_price
+            else:
+                dict2[items.date_ordered]['price'] += items.total_price
+                total_amount += items.total_price
+
         return render(request, 'index.html',
-                      {'no_users': no_users, 'x': x, 'no_order': no_order, 'no_product': no_product})
+                      {'no_users': no_users, 'x': x, 'no_order': no_order, 'no_product': no_product,
+                       'total_revenue': total_amount})
     else:
         return redirect('/admin-login')
 
@@ -308,8 +328,7 @@ def order_report(request):
     if request.method == 'POST':
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
-        order_dates = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
-        pending = Order.objects.filter(date_ordered__range=[start_date, end_date], order_status='Pending').count()
+        total_order = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
 
         order = Order.objects.filter(date_ordered__range=[start_date, end_date])
         order_dict = {}
@@ -328,13 +347,33 @@ def order_report(request):
                 dict2[items.date_ordered]['price'] += items.total_price
                 total_amount += items.total_price
 
-
-
-
-        return render(request, 'order_report.html', {'order_dates': order_dates, 'pending': pending,
-                                                     'table_data': order_dict, 'total_sales': dict2, 'total_amount': total_amount })
+        return render(request, 'order_report.html', {'total_order': total_order, 'table_data': order_dict,
+                                                     'total_sales': dict2, 'total_amount': total_amount})
     else:
-        return render(request, 'order_report.html')
+        start_date = '2020-10-1'
+        end_date = '2030-01-01'
+        total_order = Order.objects.filter(date_ordered__range=[start_date, end_date]).count()
+
+        order = Order.objects.filter(date_ordered__range=[start_date, end_date])
+        order_dict = {}
+        for x in order:
+            if not x.transaction_id in order_dict.keys():
+                order_dict[x.transaction_id] = x
+        total_sales = 0
+        dict2 = {}
+        total_amount = 0
+
+        for date, items in order_dict.items():
+            if not items.date_ordered in dict2.keys():
+                dict2[items.date_ordered] = {'price': items.total_price}
+                total_amount += items.total_price
+            else:
+                dict2[items.date_ordered]['price'] += items.total_price
+                total_amount += items.total_price
+
+        return render(request, 'order_report.html', {'total_order': total_order,
+                                                     'table_data': order_dict, 'total_sales': dict2,
+                                                     'total_amount': total_amount})
 
 
 def pending_order(request):
