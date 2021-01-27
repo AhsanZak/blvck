@@ -206,7 +206,6 @@ def edit_user_profile(request):
             user.save()
             return redirect(user_profile)
 
-
     else:
         return redirect(user_profile)
 

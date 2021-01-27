@@ -69,7 +69,6 @@ def dashboard(request):
 def admin_logout(request):
     if request.session.has_key('password'):
         request.session.flush()
-    print("confirm logout")
     return redirect('admin_login')
 
 
@@ -102,7 +101,6 @@ def create_user(request):
                     user = User.objects.create_user(username=username, password=password1, email=email,
                                                     first_name=first_name, last_name=last_name)
                     user.save()
-                    print("User created")
                     return redirect('/manage-user')
             else:
                 messages.info(request, "Passwords Not Matching")
@@ -116,9 +114,7 @@ def create_user(request):
 
 def delete_user(request, user_id):
     if request.session.has_key('password'):
-        print("-----------------------------Entered User Delete function --------------------------------")
         User.objects.get(id=user_id).delete()
-        print("User-deleted-----------------------------------")
         return redirect('/manage-user')
     else:
         return redirect('/admin-login')
@@ -126,7 +122,6 @@ def delete_user(request, user_id):
 
 def update_user(request, user_id):
     if request.session.has_key('password'):
-        print("Entered Update User ")
         user = User.objects.filter(id=user_id).first
         return render(request, 'update.html', {'user': user})
     else:
@@ -135,7 +130,6 @@ def update_user(request, user_id):
 
 def edit_user(request, user_id):
     if request.session.has_key('password'):
-        print("Entered Edit User function")
         if request.method == 'POST':
             user = User.objects.get(id=user_id)
             user.first_name = request.POST['full_name']
@@ -145,7 +139,6 @@ def edit_user(request, user_id):
 
             user.save()
 
-            print("User Updated")
             return redirect('/manage-user')
         else:
             return HttpResponse("Say Hello to the Error")
@@ -154,12 +147,10 @@ def edit_user(request, user_id):
 
 
 def block_user(request, user_id):
-    print("block user function")
     if request.session.has_key('password'):
         user = User.objects.get(id=user_id)
         if user.is_active == True:
             user.is_active = False
-            print("print user is false")
             user.save()
         else:
             user.is_active = True
@@ -171,11 +162,7 @@ def block_user(request, user_id):
 
 def delete_product(request, product_id):
     if request.session.has_key('password'):
-        print("-----------------------------Entered Delete function")
         ProductDetail.objects.get(id=product_id).delete()
-        print("Product deleted-----------------------------------")
-        # details = productdetail.objects.all().order_by('id')
-        # return render(request, 'products.html', {'details': details})
         return redirect('/manage-product')
     else:
         return redirect('/admin-login')
@@ -183,7 +170,6 @@ def delete_product(request, product_id):
 
 def manage_product(request):
     if request.session.has_key('password'):
-        print("-----------------------------Entered PRUDCT MANAGEMENT function --------------------------------")
         details = ProductDetail.objects.all().order_by('id')
         return render(request, 'products.html', {'details': details})
     else:
@@ -192,7 +178,6 @@ def manage_product(request):
 
 def update_product(request, product_id):
     if request.session.has_key('password'):
-        print("Entered Update Product function ")
         product = ProductDetail.objects.filter(id=product_id).first()
         return render(request, 'update-product.html', {'product': product})
     else:
@@ -201,7 +186,6 @@ def update_product(request, product_id):
 
 def edit_product(request, product_id):
     if request.session.has_key('password'):
-        print("Entered Edit Product function")
         if request.method == 'POST':
             product = ProductDetail.objects.get(id=product_id)
             product.product_name = request.POST['product_name']
@@ -210,15 +194,12 @@ def edit_product(request, product_id):
             product.product_description = request.POST['product_description']
             # product.product_image = request.FILES.get('product_image')
             if 'product_image' not in request.POST:
-                print("Not in post")
                 product_image = request.FILES.get('product_image')
             else:
-                print(" in post")
                 product_image = product.product_image
             product.product_image = product_image
             product.save()
 
-            print("Product Updated")
             return redirect('/manage-product')
         else:
             return HttpResponse("Say Hello to the Error")
@@ -228,7 +209,6 @@ def edit_product(request, product_id):
 
 def create_product(request):
     if request.session.has_key('password'):
-        print("entered product create function")
         if request.method == 'POST':
             product_name = request.POST['product_name']
             product_category = Category.objects.get(category_name=request.POST['product_category'])
@@ -245,7 +225,6 @@ def create_product(request):
                                                    product_description=product_description, product_price=product_price,
                                                    product_image=data)
             product.save()
-            print("product created")
             return redirect('/manage-product')
         else:
             return render(request, 'trial_CreateProduct.html')
@@ -303,7 +282,6 @@ def manage_order(request):
         for x in order:
             if not x.transaction_id in order_dict.keys():
                 order_dict[x.transaction_id] = x
-        print(order_dict)
         return render(request, 'manage_order.html', {'table_data': order_dict})
     else:
         return redirect(admin_login)
@@ -311,7 +289,6 @@ def manage_order(request):
 
 def cancel_order(request, tid):
     if request.session.has_key('password'):
-        print(tid)
         object = Order.objects.get(transaction_id=tid)
         if object.order_status == 'Placed':
             object.order_status = 'Pending'
