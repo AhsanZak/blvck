@@ -192,9 +192,8 @@ def edit_product(request, product_id):
             product.product_category = Category.objects.get(category_name=request.POST['product_category'])
             product.product_price = request.POST['product_price']
             product.product_description = request.POST['product_description']
-            # product.product_image = request.FILES.get('product_image')
-            if 'product_image' not in request.POST:
-                product_image = request.FILES.get('product_image')
+            if 'imageInput' not in request.POST:
+                product_image = request.FILES.get('imageInput')
             else:
                 product_image = product.product_image
             product.product_image = product_image

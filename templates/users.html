@@ -22,10 +22,10 @@
 <body>
     <div class="wrapper">
         <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="" alt="bootraper logo" class="app-logo">
-            </div>
             <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="{% url 'dashboard' %}" class="btn btn-success-dark"><i class="fas fa-bold"></i>Blvck Adminpanel</a>
+                </li>
                 <li>
                     <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
                 </li>
@@ -39,10 +39,10 @@
                     <a href="{% url 'manage_category' %}"><i class="fas fa-user-friends"></i>Category</a>
                 </li>
                  <li>
-                    <a href="{% url 'manage_order' %}"><i class="fas fa-user-friends"></i>Order</a>
+                    <a href="{% url 'manage_order' %}"><i class="fas fa-cubes" aria-hidden="true"></i>Order</a>
                 </li>
                 <li>
-                    <a href="{% url 'order_report' %}" ><i class="fas fa-user-shield"></i>Order Report</a>
+                    <a href="{% url 'order_report' %}" ><i class="fas fa-folder-open"></i>Order Report</a>
                 </li>
             </ul>
         </nav>
@@ -99,7 +99,11 @@
                                         <td>{{x.email}}</td>
                                         <td>{{x.last_name}}</td>
                                         <td>
-                                            <a href="{% url 'block_user' x.id %}" class="btn btn-outline-danger btn-rounded"><i class="fas fa-pen"></i></a>
+                                            {% if x.is_active == False %}
+                                            <a href="{% url 'block_user' x.id %}" class="btn btn-outline-success btn-rounded"><i class="fas fa-ban"></i></a>
+                                            {% else %}
+                                            <a href="{% url 'block_user' x.id %}" class="btn btn-outline-danger btn-rounded"><i class="fas fa-ban"></i></a>
+                                            {% endif %}
                                         </td>
                                         <td class="text-right">
                                             <a href="{% url 'update_user' x.id %}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
